@@ -1,7 +1,7 @@
 {
   "app": "SKA TOOL",
   "version": 4,
-  "updatedAt": "2026-08-29T11:16:32.138Z",
+  "updatedAt": "2026-08-29T14:24:21.813Z",
   "storage": {
     "osint_dashboard_folders": "[{\"id\":\"f1\",\"name\":\"OSINT\",\"icon\":\"📁\",\"parent\":null},{\"id\":\"f2\",\"name\":\"IA & Outils\",\"icon\":\"🤖\",\"parent\":null},{\"id\":\"f3\",\"name\":\"Réseaux & IP\",\"icon\":\"🌐\",\"parent\":null}]",
     "osint_dashboard_items": "[]",
