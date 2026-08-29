@@ -613,6 +613,7 @@
         .v6-chat{display:flex;flex-direction:column;gap:12px}.v6-chat-log{min-height:360px;max-height:58vh;overflow:auto;padding:12px;background:var(--bg-color);border:1px solid var(--border-color);border-radius:14px}.v6-msg{max-width:88%;padding:11px 13px;border-radius:13px;margin-bottom:9px;white-space:pre-wrap;word-break:break-word}.v6-msg.user{margin-left:auto;background:var(--accent-color);color:#fff}.v6-msg.ai{background:var(--desc-bg);border:1px solid var(--border-color)}.v6-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.v6-toolbar select{min-width:170px}.v6-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}.v6-project-card,.v6-lab-card{background:var(--bg-color);border:1px solid var(--border-color);border-radius:14px;padding:15px}.v6-progress{height:8px;background:var(--desc-bg);border-radius:99px;overflow:hidden}.v6-progress>span{display:block;height:100%;background:var(--accent-color)}.v6-task{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color)}.v6-task:last-child{border-bottom:0}.v6-task.done span{text-decoration:line-through;color:var(--text-muted)}.v6-badge{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--desc-bg);border:1px solid var(--border-color);font-size:.7rem;font-weight:800}.v6-code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap}
         @media(max-width:800px){.v6-grid{grid-template-columns:1fr}.v6-chat-log{max-height:none}}
 
+
         /* CORRECTION SIDEBAR : les dossiers doivent rester visibles */
         .folder-scroll-area {
             flex: 1 1 auto !important;
@@ -1379,7 +1380,6 @@ Tape « help » pour voir les commandes disponibles.
           </div>
         </div>
 
-
         <!-- VUE : CASE MANAGER / DOSSIERS D’ENQUÊTE -->
         <div id="view-tool-cases" class="view-section">
             <div class="category-card">
@@ -2064,7 +2064,6 @@ const viewToolTerminal = document.getElementById('view-tool-terminal');
 const viewToolHash = document.getElementById('view-tool-hash');
 const viewToolNetworkMap = document.getElementById('view-tool-network-map');
 const viewToolKnowledge = document.getElementById('view-tool-knowledge');
-const viewQuests = document.getElementById('view-quests');
 const viewToolLearning = document.getElementById('view-tool-learning');
 
 const dashboardNavBtn = document.getElementById('dashboard-nav-btn');
@@ -2330,8 +2329,8 @@ function toggleSidebar() { document.body.classList.toggle('sidebar-collapsed'); 
 
 function switchView(viewName) {
   currentActiveView = viewName;
-  [viewDashboard, viewKanban, viewSchedule, viewNotepad, viewTools, viewPasswordManager, viewTutorials, viewToolConverter, viewToolSnippets, viewToolIdentity, viewToolLinkChecker, viewToolContacts, viewToolKeys, viewToolIP, viewToolAssets, viewToolAccounts, viewToolEmail, viewToolDNS, viewToolCases, viewToolTerminal, viewToolHash, viewToolNetworkMap, viewToolKnowledge, viewQuests, viewToolCommand, viewAnalytics, viewToolLearning, viewCalendar, viewLab, v6AiView, v6LabsView, v6ProjectsView].forEach(v => v.classList.remove('active-view'));
-  [dashboardNavBtn, notepadNavBtn, kanbanNavBtn, scheduleNavBtn, toolsNavBtn, passwordManagerNavBtn, tutorialsNavBtn, toolConvBtn, toolSnippetsBtn, toolIdentityBtn, toolLinkcheckerBtn, toolContactsBtn, toolKeysBtn, toolIPBtn, toolAssetsBtn, toolAccountsBtn, toolEmailBtn, toolDNSBtn, toolCasesBtn, toolTerminalBtn, toolHashBtn, toolNetworkMapBtn, toolKnowledgeBtn, questsNavBtn, toolCommandBtn, toolAnalyticsBtn, toolLearningBtn, calendarNavBtn, labNavBtn, v6AiNavBtn, v6LabsNavBtn, v6ProjectsNavBtn].forEach(b => b.classList.remove('active'));
+  [viewDashboard, viewKanban, viewSchedule, viewNotepad, viewTools, viewPasswordManager, viewTutorials, viewToolConverter, viewToolSnippets, viewToolIdentity, viewToolLinkChecker, viewToolContacts, viewToolKeys, viewToolIP, viewToolAssets, viewToolAccounts, viewToolEmail, viewToolDNS, viewToolCases, viewToolTerminal, viewToolHash, viewToolNetworkMap, viewToolKnowledge, viewToolCommand, viewAnalytics, viewToolLearning, viewCalendar, viewLab, v6AiView, v6LabsView, v6ProjectsView].forEach(v => v.classList.remove('active-view'));
+  [dashboardNavBtn, notepadNavBtn, kanbanNavBtn, scheduleNavBtn, toolsNavBtn, passwordManagerNavBtn, tutorialsNavBtn, toolConvBtn, toolSnippetsBtn, toolIdentityBtn, toolLinkcheckerBtn, toolContactsBtn, toolKeysBtn, toolIPBtn, toolAssetsBtn, toolAccountsBtn, toolEmailBtn, toolDNSBtn, toolCasesBtn, toolTerminalBtn, toolHashBtn, toolNetworkMapBtn, toolKnowledgeBtn, toolCommandBtn, toolAnalyticsBtn, toolLearningBtn, calendarNavBtn, labNavBtn, v6AiNavBtn, v6LabsNavBtn, v6ProjectsNavBtn].forEach(b => b.classList.remove('active'));
 
   if (viewName === 'dashboard') {
     viewDashboard.classList.add('active-view');
@@ -4619,7 +4618,6 @@ function renderLearning() {
 
 function toggleLearning(year, i, checked) {
   const key = courseKey(year, i);
-  const wasDone = !!learningDone[key];
   if (checked) learningDone[key] = true;
   else delete learningDone[key];
   localStorage.setItem('ska_learning_done', JSON.stringify(learningDone));
@@ -4975,15 +4973,12 @@ function skaTerminalRun(raw){
   }
   if(out)skaTerminalPrint(out); skaTerminalSave();
 }
-localStorage.removeItem('ska_xp_data');
-localStorage.removeItem('ska_quests');
-
 document.addEventListener('keydown',e=>{if(e.target?.id==='ska-terminal-input'){if(e.key==='Enter'){e.preventDefault();skaTerminalRun(e.target.value);}else if(e.key==='Tab'){e.preventDefault();}}});
 
 /* === HASH / ENCODAGES === */
-async function skaHashCompute(){const input=document.getElementById('hash-input')?.value||'';const algo=document.getElementById('hash-algo')?.value||'SHA-256';if(!window.crypto?.subtle){alert('Web Crypto API indisponible.');return;}const buf=await crypto.subtle.digest(algo,new TextEncoder().encode(input));const hex=[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');document.getElementById('hash-output').value=hex;;}
+async function skaHashCompute(){const input=document.getElementById('hash-input')?.value||'';const algo=document.getElementById('hash-algo')?.value||'SHA-256';if(!window.crypto?.subtle){alert('Web Crypto API indisponible.');return;}const buf=await crypto.subtle.digest(algo,new TextEncoder().encode(input));const hex=[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');document.getElementById('hash-output').value=hex;}
 function skaHashCopy(){const v=document.getElementById('hash-output')?.value||'';if(v)navigator.clipboard?.writeText(v);}
-function skaEncode(type){const input=document.getElementById('hash-input')?.value||'';let out='';if(type==='base64')out=btoa(unescape(encodeURIComponent(input)));if(type==='hex')out=[...new TextEncoder().encode(input)].map(b=>b.toString(16).padStart(2,'0')).join('');if(type==='url')out=encodeURIComponent(input);if(type==='html')out=input.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');document.getElementById('hash-output').value=out;;}
+function skaEncode(type){const input=document.getElementById('hash-input')?.value||'';let out='';if(type==='base64')out=btoa(unescape(encodeURIComponent(input)));if(type==='hex')out=[...new TextEncoder().encode(input)].map(b=>b.toString(16).padStart(2,'0')).join('');if(type==='url')out=encodeURIComponent(input);if(type==='html')out=input.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');document.getElementById('hash-output').value=out;}
 function skaDecode(type){try{const v=document.getElementById('hash-input')?.value||'';let out=type==='base64'?decodeURIComponent(escape(atob(v))):v;document.getElementById('hash-output').value=out;}catch(e){document.getElementById('hash-output').value='Valeur Base64 invalide.';}}
 
 /* === CARTOGRAPHIE RÉSEAU INTERACTIVE — V6.2 FIX === */
@@ -4991,8 +4986,8 @@ let skaNetworkData=JSON.parse(localStorage.getItem('ska_network_map')||'null')||
 let skaNetworkSelected=[];
 function networkSave(){localStorage.setItem('ska_network_map',JSON.stringify(skaNetworkData));}
 function networkClear(){if(!confirm('Effacer toute la cartographie ?'))return;skaNetworkData={nodes:[],links:[]};skaNetworkSelected=[];networkSave();renderNetworkMap();showToast('🗺️ Cartographie effacée.');}
-function networkAddNode(){const types=['routeur','switch','serveur','poste','firewall','wifi'];const type=(prompt('Type :\nrouteur, switch, serveur, poste, firewall, wifi','serveur')||'').trim().toLowerCase();if(!type||!types.includes(type)){showToast('Type d’équipement invalide.');return;}const name=(prompt('Nom de l’équipement :','Nouvel équipement')||'').trim();if(!name)return;const ip=(prompt('Adresse IP (optionnel) :','')||'').trim();const id='n_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);skaNetworkData.nodes.push({id,name,type,ip,x:40+(skaNetworkData.nodes.length%4)*220,y:50+(Math.floor(skaNetworkData.nodes.length/4))*130});networkSave();renderNetworkMap();;}
-function networkConnectSelected(){if(skaNetworkSelected.length!==2){showToast('Sélectionne exactement 2 équipements.');return;}const [a,b]=skaNetworkSelected;if(a!==b&&!skaNetworkData.links.some(l=>(l[0]===a&&l[1]===b)||(l[0]===b&&l[1]===a)))skaNetworkData.links.push([a,b]);skaNetworkSelected=[];networkSave();renderNetworkMap();;}
+function networkAddNode(){const types=['routeur','switch','serveur','poste','firewall','wifi'];const type=(prompt('Type :\nrouteur, switch, serveur, poste, firewall, wifi','serveur')||'').trim().toLowerCase();if(!type||!types.includes(type)){showToast('Type d’équipement invalide.');return;}const name=(prompt('Nom de l’équipement :','Nouvel équipement')||'').trim();if(!name)return;const ip=(prompt('Adresse IP (optionnel) :','')||'').trim();const id='n_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);skaNetworkData.nodes.push({id,name,type,ip,x:40+(skaNetworkData.nodes.length%4)*220,y:50+(Math.floor(skaNetworkData.nodes.length/4))*130});networkSave();renderNetworkMap();}
+function networkConnectSelected(){if(skaNetworkSelected.length!==2){showToast('Sélectionne exactement 2 équipements.');return;}const [a,b]=skaNetworkSelected;if(a!==b&&!skaNetworkData.links.some(l=>(l[0]===a&&l[1]===b)||(l[0]===b&&l[1]===a)))skaNetworkData.links.push([a,b]);skaNetworkSelected=[];networkSave();renderNetworkMap();}
 function networkNodeIcon(t){return ({routeur:'📡',switch:'🔀',serveur:'🖥️',poste:'💻',firewall:'🧱',wifi:'📶'})[t]||'🔹';}
 function networkDeleteNode(id){skaNetworkData.nodes=skaNetworkData.nodes.filter(n=>n.id!==id);skaNetworkData.links=skaNetworkData.links.filter(l=>l[0]!==id&&l[1]!==id);skaNetworkSelected=skaNetworkSelected.filter(x=>x!==id);networkSave();renderNetworkMap();}
 function renderNetworkMap(){const map=document.getElementById('ska-network-map');if(!map)return;map.innerHTML='';const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1';map.appendChild(svg);const byId=id=>skaNetworkData.nodes.find(n=>n.id===id);skaNetworkData.links.forEach(([a,b])=>{const na=byId(a),nb=byId(b);if(!na||!nb)return;const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('x1',na.x+90);line.setAttribute('y1',na.y+35);line.setAttribute('x2',nb.x+90);line.setAttribute('y2',nb.y+35);line.setAttribute('stroke','currentColor');line.setAttribute('stroke-width','3');line.setAttribute('opacity','.5');svg.appendChild(line);});
@@ -5006,6 +5001,8 @@ function saveKnowledge(){localStorage.setItem('ska_knowledge_base',JSON.stringif
 function knowledgeAdd(){const title=prompt('Titre de l’article :');if(!title)return;const tags=(prompt('Tags séparés par des virgules :','réseau')||'').split(',').map(x=>x.trim()).filter(Boolean);const content=prompt('Contenu :','Nouvelle fiche de connaissance…')||'';skaKnowledgeData.unshift({id:'kb'+Date.now(),title,tags,content});saveKnowledge();renderKnowledgeBase();}
 function knowledgeDelete(id){skaKnowledgeData=skaKnowledgeData.filter(x=>x.id!==id);saveKnowledge();renderKnowledgeBase();}
 function renderKnowledgeBase(){const box=document.getElementById('kb-list');if(!box)return;const q=(document.getElementById('kb-search')?.value||'').toLowerCase();const data=skaKnowledgeData.filter(x=>(x.title+' '+x.content+' '+x.tags.join(' ')).toLowerCase().includes(q));box.innerHTML=data.length?data.map(x=>`<div class="ska-widget"><h3>📚 ${escapeHTML(x.title)}</h3><div>${x.tags.map(t=>`<span class="ska-tag">${escapeHTML(t)}</span>`).join('')}</div><p class="muted-help" style="white-space:pre-wrap">${escapeHTML(x.content)}</p><button class="btn-sm btn-danger" onclick="knowledgeDelete('${x.id}')">Supprimer</button></div>`).join(''):'<div class="today-empty">Aucun article trouvé.</div>';}
+
+
 
 function showToast(message) {
   let toast = document.getElementById('ska-move-toast');
@@ -5031,9 +5028,6 @@ function showToast(message) {
 }
 
 
-localStorage.removeItem('ska_xp_data');
-localStorage.removeItem('ska_quests');
-
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openGlobalSearch()}if(e.key==='Escape'){closeGlobalSearch();closeDashboardSettings();closeTagManager();closeCaseModal()}});
 renderTutorials();
 renderSelectedCourseFiles();
@@ -5042,4 +5036,4 @@ renderNetworkMap();
 </script>
 <div class="modal-overlay" id="notifications-modal" onclick="if(event.target===this)closeNotifications()"><div class="modal-card"><div class="modal-header"><span class="modal-title">🔔 Centre de notifications</span><div class="ska-toolbar-wrap"><button class="btn-sm" onclick="markAllNotificationsRead()">✓ Tout lire</button><button class="btn-sm btn-danger" onclick="clearReadNotifications()">🗑 Effacer lues</button><button class="btn-close-modal" onclick="closeNotifications()">✕</button></div></div><div class="ska-toolbar-wrap" style="margin-bottom:10px"><button class="btn-sm" onclick="setNotificationFilter('all')">Toutes</button><button class="btn-sm" onclick="setNotificationFilter('unread')">Non lues</button><button class="btn-sm" onclick="setNotificationFilter('danger')">🔴 Urgentes</button><button class="btn-sm" onclick="setNotificationFilter('warn')">🟠 Échéances</button></div><div id="notifications-list"></div></div></div>
 </body>
-</html>S
+</html>
