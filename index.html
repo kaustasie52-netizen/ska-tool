@@ -3061,7 +3061,7 @@ function loadData() {
   initColumns();
   foldersData = JSON.parse(localStorage.getItem('osint_dashboard_folders')) || [...DEFAULT_FOLDERS];
   const storedItems = JSON.parse(localStorage.getItem('osint_dashboard_items') || '[]');
-  itemsData = Array.isArray(storedItems) ? storedItems.filter(i => i.type !== 'link') : DEFAULT_ITEMS.filter(i => i.type !== 'link');
+  itemsData = Array.isArray(storedItems) ? storedItems : [...DEFAULT_ITEMS];
   kanbanData = JSON.parse(localStorage.getItem('ska_kanban_tasks')) || [...DEFAULT_KANBAN];
   scheduleData = JSON.parse(localStorage.getItem('ska_schedule_tasks')) || [...DEFAULT_SCHEDULE];
   casesData = JSON.parse(localStorage.getItem('ska_cases_data') || '[]');
@@ -3088,14 +3088,12 @@ function loadData() {
   renderReviewLists();
   populateCommandActions();
   updateNotificationCenter();
-  loadAllDataFromGitHub();
 }
 
 
 function saveData() {
   updateStats();
   localStorage.setItem('osint_dashboard_folders', JSON.stringify(foldersData));
-  // Les liens ne sont pas persistés en local : ils vivent dans GitHub.
   localStorage.setItem('osint_dashboard_items', JSON.stringify(itemsData));
   localStorage.setItem('ska_kanban_tasks', JSON.stringify(kanbanData));
   localStorage.setItem('ska_schedule_tasks', JSON.stringify(scheduleData));
@@ -3104,6 +3102,10 @@ function saveData() {
   localStorage.setItem('ska_cases_data', JSON.stringify(casesData));
   localStorage.setItem('ska_tags_data', JSON.stringify(customTagsData));
   localStorage.setItem('ska_review_items', JSON.stringify(reviewItemsData));
+  localStorage.setItem('ska_snippets_data', JSON.stringify(snippetsData));
+  localStorage.setItem('ska_contacts_data', JSON.stringify(contactsData));
+  localStorage.setItem('ska_note_title', noteTitleInput.value);
+  localStorage.setItem('ska_note_content', noteContentArea.value);
   queueGitHubAllDataSync();
 }
 
@@ -3837,9 +3839,6 @@ async function loadAllDataFromGitHub(){
     }
     /* Recharger les variables de l'application si elles existent. */
     if(typeof loadData==='function')loadData();
-    if(typeof renderFolders==='function')renderFolders();
-    if(typeof renderItems==='function')renderItems();
-    if(typeof updateStats==='function')updateStats();
   }catch(e){
     if(!String(e.message).includes('Not Found'))console.warn('GitHub SKA TOOL:',e.message)
   }
@@ -5100,6 +5099,7 @@ function initCollapsibleSidebarSections() {
 }
 
 loadData();
+loadAllDataFromGitHub();
 initCollapsibleSidebarSections();
 initDashboardCollapsibleSections();
 
