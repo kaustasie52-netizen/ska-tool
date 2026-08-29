@@ -994,6 +994,7 @@
                 <button class="btn-sm" onclick="openDashboardSettings()">⚙️ Dashboard</button>
                 <button class="btn-sm" onclick="openTagManager()">🏷️ Tags</button>
                 <button class="btn-sm" onclick="exportFullBackup()">💾 Sauvegarde</button>
+                <button class="btn-sm" onclick="openGitHubSyncModal()">🐙 GitHub</button>
                 <button class="btn-sm" onclick="document.getElementById('full-backup-import').click()">📥 Restaurer</button>
                 <input id="full-backup-import" type="file" accept=".json,application/json" style="display:none" onchange="importFullBackup(event)">
             </div>
@@ -1925,6 +1926,20 @@ Tape « help » pour voir les commandes disponibles.
     </div>
 </div>
 
+<div id="github-sync-modal" class="modal-overlay" onclick="if(event.target===this) closeGitHubSyncModal()">
+  <div class="modal-card" style="max-width:560px;">
+    <div class="modal-header"><span class="modal-title">🐙 Synchronisation GitHub des liens</span><button class="btn-close-modal" onclick="closeGitHubSyncModal()">✕</button></div>
+    <div class="muted-help">Les liens seront enregistrés dans un fichier JSON de ton dépôt GitHub. Le token reste dans la session du navigateur.</div>
+    <div class="form-group"><label class="form-label">Propriétaire / organisation</label><input id="github-owner" class="import-input" placeholder="monpseudo"></div>
+    <div class="form-group"><label class="form-label">Dépôt</label><input id="github-repo" class="import-input" placeholder="ska-tool"></div>
+    <div class="form-group"><label class="form-label">Branche</label><input id="github-branch" class="import-input" value="main"></div>
+    <div class="form-group"><label class="form-label">Fichier</label><input id="github-path" class="import-input" value="data/links.json"></div>
+    <div class="form-group"><label class="form-label">Token GitHub</label><input id="github-token" class="import-input" type="password" autocomplete="off" placeholder="github_pat_…"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;"><button class="btn-sm" onclick="testGitHubSync()">🔎 Tester</button><button class="btn-sm" style="background:var(--accent-color);color:#fff;border:none;" onclick="saveGitHubSyncConfig()">💾 Enregistrer</button></div>
+    <div id="github-sync-status" class="muted-help"></div>
+  </div>
+</div>
+
 <div class="preview-panel" id="preview-panel">
     <div class="preview-header">
         <span class="preview-title" id="preview-title" style="font-weight:600; font-size:0.9rem;">Aperçu</span>
@@ -2193,13 +2208,20 @@ function switchModalType(type) {
   }
 }
 
-function addUniversalItem() {
+async function addUniversalItem() {
   const targetId = targetFolderSelect.value || (foldersData[0] ? foldersData[0].id : null);
   const tagsInput = document.getElementById('tags-loader');
   const descInput = document.getElementById('desc-loader');
   const tagsArr = tagsInput.value ? tagsInput.value.split(',').map(t => t.trim()).filter(t => t.length > 0) : [];
 
   if (currentModalType === 'link') {
+    const gh = getGitHubConfig();
+    if (!gh.owner || !gh.repo || !gh.path || !getGitHubToken()) {
+      closeAddModal();
+      openGitHubSyncModal();
+      setGitHubStatus('⚠️ Configure GitHub avant d’ajouter un lien : les liens ne sont plus stockés localement.', true);
+      return;
+    }
     const urlInput = document.getElementById('url-loader');
     const emojiInput = document.getElementById('emoji-loader');
     let url = urlInput.value.trim();
@@ -2245,6 +2267,10 @@ function addUniversalItem() {
   saveData();
   renderFolders();
   renderItems();
+  if (currentModalType === 'link' && getGitHubConfig().owner && getGitHubConfig().repo && getGitHubToken()) {
+    try { await syncLinksToGitHub(); showToast('🐙 Lien enregistré sur GitHub.'); }
+    catch(e) { showToast('⚠️ GitHub : '+e.message); }
+  }
   tagsInput.value = '';
   descInput.value = '';
   closeAddModal();
@@ -3034,7 +3060,8 @@ function loadData() {
   initTheme();
   initColumns();
   foldersData = JSON.parse(localStorage.getItem('osint_dashboard_folders')) || [...DEFAULT_FOLDERS];
-  itemsData = JSON.parse(localStorage.getItem('osint_dashboard_items')) || [...DEFAULT_ITEMS];
+  const storedItems = JSON.parse(localStorage.getItem('osint_dashboard_items') || '[]');
+  itemsData = Array.isArray(storedItems) ? storedItems.filter(i => i.type !== 'link') : DEFAULT_ITEMS.filter(i => i.type !== 'link');
   kanbanData = JSON.parse(localStorage.getItem('ska_kanban_tasks')) || [...DEFAULT_KANBAN];
   scheduleData = JSON.parse(localStorage.getItem('ska_schedule_tasks')) || [...DEFAULT_SCHEDULE];
   casesData = JSON.parse(localStorage.getItem('ska_cases_data') || '[]');
@@ -3061,13 +3088,15 @@ function loadData() {
   renderReviewLists();
   populateCommandActions();
   updateNotificationCenter();
+  loadGitHubLinks();
 }
 
 
 function saveData() {
   updateStats();
   localStorage.setItem('osint_dashboard_folders', JSON.stringify(foldersData));
-  localStorage.setItem('osint_dashboard_items', JSON.stringify(itemsData));
+  // Les liens ne sont pas persistés en local : ils vivent dans GitHub.
+  localStorage.setItem('osint_dashboard_items', JSON.stringify(itemsData.filter(i => i.type !== 'link')));
   localStorage.setItem('ska_kanban_tasks', JSON.stringify(kanbanData));
   localStorage.setItem('ska_schedule_tasks', JSON.stringify(scheduleData));
   localStorage.setItem('ska_calendar_events', JSON.stringify(calendarEventsData));
@@ -3075,6 +3104,7 @@ function saveData() {
   localStorage.setItem('ska_cases_data', JSON.stringify(casesData));
   localStorage.setItem('ska_tags_data', JSON.stringify(customTagsData));
   localStorage.setItem('ska_review_items', JSON.stringify(reviewItemsData));
+  queueGitHubLinksSync();
 }
 
 function updateNotepadStats() {
@@ -3710,6 +3740,26 @@ function filterByTag(tag){ switchView('dashboard'); if(searchInput){searchInput.
 function openGlobalSearch(){document.getElementById('global-search-modal').classList.add('open');document.getElementById('global-search-input').value='';runGlobalSearch();setTimeout(()=>document.getElementById('global-search-input')?.focus(),50)}
 function closeGlobalSearch(){document.getElementById('global-search-modal').classList.remove('open')}
 function runGlobalSearch(){ const q=(document.getElementById('global-search-input')?.value||'').trim().toLowerCase(); const out=document.getElementById('global-search-results'); if(!out)return; if(!q){out.innerHTML='<div class="today-empty">Recherche dans les liens, tâches, notes, snippets, contacts, comptes et enquêtes.</div>';return;} const r=[]; const add=(type,title,meta,fn)=>{if((title+' '+meta).toLowerCase().includes(q))r.push({type,title,meta,fn})}; itemsData.forEach(i=>add('Lien / ressource',i.title,(i.tags||[]).join(' '),()=>{closeGlobalSearch();switchView('dashboard');selectFolder(i.folderId)})); kanbanData.forEach(t=>add('Tâche',t.title,t.description||'',()=>{closeGlobalSearch();switchView('kanban')})); snippetsData.forEach(x=>add('Snippet',x.title||x.name||'Snippet',x.language||'',()=>{closeGlobalSearch();switchView('tool-snippets')})); contactsData.forEach(c=>add('Contact',c.name,[c.role,c.email,c.phone].join(' '),()=>{closeGlobalSearch();switchView('tool-contacts')})); casesData.forEach(c=>add('Enquête',c.name,[c.goal,(c.tags||[]).join(' ')].join(' '),()=>{closeGlobalSearch();switchView('tool-cases')})); out.innerHTML=r.length?r.slice(0,80).map((x,i)=>`<div class="ska-result" onclick="window.__skaSearchFns[${i}]()"><div class="ska-result-type">${x.type}</div><div class="ska-result-title">${escapeHTML(x.title)}</div><div class="ska-result-meta">${escapeHTML(x.meta)}</div></div>`).join(''):'<div class="today-empty">Aucun résultat.</div>'; window.__skaSearchFns=r.slice(0,80).map(x=>x.fn); }
+// === GITHUB : stockage distant des liens ===
+const GITHUB_CONFIG_KEY='ska_github_links_config';
+const GITHUB_TOKEN_KEY='ska_github_links_token_session';
+let githubLinksSha=null, githubSyncTimer=null;
+function getGitHubConfig(){try{return JSON.parse(localStorage.getItem(GITHUB_CONFIG_KEY)||'{}')}catch(_){return {}}}
+function getGitHubToken(){return sessionStorage.getItem(GITHUB_TOKEN_KEY)||''}
+function setGitHubStatus(msg,error=false){const e=document.getElementById('github-sync-status');if(e){e.textContent=msg;e.style.color=error?'var(--danger-color)':'var(--text-muted)'}}
+function openGitHubSyncModal(){const c=getGitHubConfig();document.getElementById('github-owner').value=c.owner||'';document.getElementById('github-repo').value=c.repo||'';document.getElementById('github-branch').value=c.branch||'main';document.getElementById('github-path').value=c.path||'data/links.json';document.getElementById('github-token').value=getGitHubToken();setGitHubStatus(c.owner&&c.repo?'Configuration chargée.':'Configure ton dépôt GitHub puis teste la connexion.');document.getElementById('github-sync-modal').classList.add('open')}
+function closeGitHubSyncModal(){document.getElementById('github-sync-modal').classList.remove('open')}
+function saveGitHubSyncConfig(){const owner=document.getElementById('github-owner').value.trim(),repo=document.getElementById('github-repo').value.trim(),branch=document.getElementById('github-branch').value.trim()||'main',path=document.getElementById('github-path').value.trim()||'data/links.json',token=document.getElementById('github-token').value.trim();if(!owner||!repo)return setGitHubStatus('Propriétaire et dépôt obligatoires.',true);localStorage.setItem(GITHUB_CONFIG_KEY,JSON.stringify({owner,repo,branch,path}));if(token)sessionStorage.setItem(GITHUB_TOKEN_KEY,token);else sessionStorage.removeItem(GITHUB_TOKEN_KEY);setGitHubStatus('Configuration enregistrée. Synchronisation…');syncLinksToGitHub().then(()=>setGitHubStatus('✅ Liens synchronisés sur GitHub.')).catch(e=>setGitHubStatus('❌ '+e.message,true))}
+async function githubRequest(url,options={}){const token=getGitHubToken(),headers=Object.assign({'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},options.headers||{});if(token)headers.Authorization='Bearer '+token;const r=await fetch(url,Object.assign({},options,{headers}));let d=null;try{d=await r.json()}catch(_){}if(!r.ok)throw new Error((d&&d.message)||('GitHub HTTP '+r.status));return d}
+function githubApiUrl(o,r,p,b){return 'https://api.github.com/repos/'+encodeURIComponent(o)+'/'+encodeURIComponent(r)+'/contents/'+p.split('/').map(encodeURIComponent).join('/')+'?ref='+encodeURIComponent(b)}
+function b64EncodeUtf8(t){const bytes=new TextEncoder().encode(t);let x='';bytes.forEach(b=>x+=String.fromCharCode(b));return btoa(x)}
+function b64DecodeUtf8(v){const x=atob(v.replace(/\n/g,''));return new TextDecoder().decode(Uint8Array.from(x,c=>c.charCodeAt(0)))}
+function githubLinksPayload(){return {version:1,updatedAt:new Date().toISOString(),links:itemsData.filter(i=>i.type==='link')}}
+async function loadGitHubLinks(){const c=getGitHubConfig();if(!c.owner||!c.repo||!c.path)return;try{const d=await githubRequest(githubApiUrl(c.owner,c.repo,c.path,c.branch||'main'));githubLinksSha=d.sha||null;const parsed=JSON.parse(b64DecodeUtf8(d.content||''));const remote=Array.isArray(parsed)?parsed:(Array.isArray(parsed.links)?parsed.links:[]);itemsData=itemsData.filter(i=>i.type!=='link').concat(remote);renderItems();renderFolders();updateStats()}catch(e){if(!String(e.message).includes('Not Found'))console.warn('GitHub links:',e.message)}}
+async function syncLinksToGitHub(){const c=getGitHubConfig();if(!c.owner||!c.repo||!c.path)return false;if(!getGitHubToken())throw new Error('Token GitHub manquant.');const api=githubApiUrl(c.owner,c.repo,c.path,c.branch||'main');let sha=githubLinksSha;if(!sha){try{const cur=await githubRequest(api);sha=cur.sha;githubLinksSha=sha}catch(e){if(!String(e.message).includes('Not Found'))throw e}}const body={message:'chore: mise à jour des liens SKA Tool',content:b64EncodeUtf8(JSON.stringify(githubLinksPayload(),null,2)+'\n'),branch:c.branch||'main'};if(sha)body.sha=sha;const result=await githubRequest(api.split('?')[0],{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});githubLinksSha=result.content&&result.content.sha||githubLinksSha;return true}
+function queueGitHubLinksSync(){clearTimeout(githubSyncTimer);const c=getGitHubConfig();if(!c.owner||!c.repo||!c.path||!getGitHubToken())return;githubSyncTimer=setTimeout(()=>syncLinksToGitHub().catch(e=>console.error('GitHub:',e.message)),500)}
+async function testGitHubSync(){const owner=document.getElementById('github-owner').value.trim(),repo=document.getElementById('github-repo').value.trim(),branch=document.getElementById('github-branch').value.trim()||'main',path=document.getElementById('github-path').value.trim()||'data/links.json',token=document.getElementById('github-token').value.trim();if(!owner||!repo)return setGitHubStatus('Complète la configuration.',true);localStorage.setItem(GITHUB_CONFIG_KEY,JSON.stringify({owner,repo,branch,path}));if(token)sessionStorage.setItem(GITHUB_TOKEN_KEY,token);try{await githubRequest('https://api.github.com/user');let current=null;try{current=await githubRequest(githubApiUrl(owner,repo,path,branch))}catch(e){if(!String(e.message).includes('Not Found'))throw e}githubLinksSha=current&&current.sha||null;setGitHubStatus('✅ Connexion GitHub OK'+(current?' — fichier trouvé.':' — le fichier sera créé à la première sauvegarde.'))}catch(e){setGitHubStatus('❌ '+e.message,true)}}
+
 function exportFullBackup(){ const storage={}; for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);storage[k]=localStorage.getItem(k)} const payload={app:'SKA TOOL',version:3,exportedAt:new Date().toISOString(),storage}; const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}); const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ska-tool-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast('Sauvegarde complète exportée.'); }
 function importFullBackup(event){ const file=event.target.files?.[0]; if(!file)return; const reader=new FileReader(); reader.onload=()=>{try{const d=JSON.parse(reader.result); if(!d || d.app!=='SKA TOOL' || !d.storage)throw new Error('Sauvegarde SKA Tool invalide'); if(!confirm('Restaurer cette sauvegarde ? Toutes les données locales actuelles seront remplacées.'))return; localStorage.clear();Object.entries(d.storage).forEach(([k,v])=>localStorage.setItem(k,String(v)));alert('Sauvegarde restaurée. SKA Tool va être rechargé.');location.reload();}catch(e){alert('Import impossible : '+e.message)}finally{event.target.value='';}};reader.readAsText(file); }
 
