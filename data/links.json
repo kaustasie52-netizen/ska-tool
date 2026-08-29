@@ -1,7 +1,7 @@
 {
   "app": "SKA TOOL",
   "version": 4,
-  "updatedAt": "2026-08-29T11:12:14.190Z",
+  "updatedAt": "2026-08-29T11:12:15.799Z",
   "storage": {
     "osint_dashboard_folders": "[{\"id\":\"f1\",\"name\":\"OSINT\",\"icon\":\"📁\",\"parent\":null},{\"id\":\"f2\",\"name\":\"IA & Outils\",\"icon\":\"🤖\",\"parent\":null},{\"id\":\"f3\",\"name\":\"Réseaux & IP\",\"icon\":\"🌐\",\"parent\":null}]",
     "osint_dashboard_items": "[]",
@@ -13,7 +13,7 @@
     "ska_cases_data": "[]",
     "ska_tags_data": "[]",
     "osint_dashboard_theme": "dark",
-    "ska_tutorials_data": "[{\"id\":\"tut_1788001928576\",\"title\":\"aa\",\"url\":\"https://www.youtube.com/watch?v=022OsYS7b0A\",\"description\":\"\"}]",
+    "ska_tutorials_data": "[]",
     "ska_calendar_events": "[]",
     "osint_dashboard_cols": "2",
     "ska_schedule_tasks": "[{\"id\":\"s1\",\"day\":\"lundi\",\"hour\":\"09:00\",\"task\":\"Revue des actualités & veille\"},{\"id\":\"s2\",\"day\":\"mardi\",\"hour\":\"10:00\",\"task\":\"Investigations OSINT\"},{\"id\":\"s3\",\"day\":\"mercredi\",\"hour\":\"14:00\",\"task\":\"Automatisation scripts\"}]"
