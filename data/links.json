@@ -1,9 +1,13 @@
 {
   "app": "SKA TOOL",
   "version": 4,
-  "updatedAt": "2026-08-29T14:24:21.813Z",
+  "updatedAt": "2026-08-29T14:33:48.721Z",
   "storage": {
+    "ska_contacts_data": "[]",
+    "ska_note_title": "Mon Document",
     "osint_dashboard_folders": "[{\"id\":\"f1\",\"name\":\"OSINT\",\"icon\":\"📁\",\"parent\":null},{\"id\":\"f2\",\"name\":\"IA & Outils\",\"icon\":\"🤖\",\"parent\":null},{\"id\":\"f3\",\"name\":\"Réseaux & IP\",\"icon\":\"🌐\",\"parent\":null}]",
+    "ska_snippets_data": "[]",
+    "ska_network_map": "{\"nodes\":[{\"id\":\"n1\",\"name\":\"Routeur\",\"type\":\"routeur\",\"ip\":\"192.168.1.1\",\"x\":70,\"y\":36},{\"id\":\"n2\",\"name\":\"Switch\",\"type\":\"switch\",\"ip\":\"192.168.1.2\",\"x\":330,\"y\":180},{\"id\":\"n3\",\"name\":\"PC étudiant\",\"type\":\"poste\",\"ip\":\"192.168.1.20\",\"x\":600,\"y\":80}],\"links\":[[\"n1\",\"n2\"],[\"n2\",\"n3\"]]}",
     "osint_dashboard_items": "[]",
     "ska_review_items": "[]",
     "ska_dashboard_section_tags": "collapsed",
@@ -13,6 +17,7 @@
     "ska_cases_data": "[]",
     "ska_tags_data": "[]",
     "osint_dashboard_theme": "dark",
+    "ska_note_content": "",
     "ska_tutorials_data": "[]",
     "ska_calendar_events": "[]",
     "osint_dashboard_cols": "2",
