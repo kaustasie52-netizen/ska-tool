@@ -613,16 +613,6 @@
         .v6-chat{display:flex;flex-direction:column;gap:12px}.v6-chat-log{min-height:360px;max-height:58vh;overflow:auto;padding:12px;background:var(--bg-color);border:1px solid var(--border-color);border-radius:14px}.v6-msg{max-width:88%;padding:11px 13px;border-radius:13px;margin-bottom:9px;white-space:pre-wrap;word-break:break-word}.v6-msg.user{margin-left:auto;background:var(--accent-color);color:#fff}.v6-msg.ai{background:var(--desc-bg);border:1px solid var(--border-color)}.v6-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.v6-toolbar select{min-width:170px}.v6-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}.v6-project-card,.v6-lab-card{background:var(--bg-color);border:1px solid var(--border-color);border-radius:14px;padding:15px}.v6-progress{height:8px;background:var(--desc-bg);border-radius:99px;overflow:hidden}.v6-progress>span{display:block;height:100%;background:var(--accent-color)}.v6-task{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border-color)}.v6-task:last-child{border-bottom:0}.v6-task.done span{text-decoration:line-through;color:var(--text-muted)}.v6-badge{display:inline-block;padding:3px 8px;border-radius:999px;background:var(--desc-bg);border:1px solid var(--border-color);font-size:.7rem;font-weight:800}.v6-code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap}
         @media(max-width:800px){.v6-grid{grid-template-columns:1fr}.v6-chat-log{max-height:none}}
 
-
-        /* === SKA TOOL V6.1 : TERMINAL / HASH / GAMIFICATION === */
-        .ska-terminal{background:#05070a;border:1px solid var(--border-color);border-radius:14px;overflow:hidden}
-        .ska-terminal-head{display:flex;align-items:center;gap:7px;padding:10px 13px;background:var(--card-bg);border-bottom:1px solid var(--border-color)}
-        .ska-terminal-dot{width:9px;height:9px;border-radius:50%;background:#64748b}.ska-terminal-dot:nth-child(2){background:#eab308}.ska-terminal-dot:nth-child(3){background:#22c55e}
-        .ska-terminal-output{height:360px;overflow:auto;padding:14px;color:#d1fae5;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap}
-        .ska-terminal-input{display:flex;border-top:1px solid var(--border-color);padding:10px;gap:8px}.ska-terminal-input span{color:#22c55e;font:14px monospace;padding:9px 0}.ska-terminal-input input{flex:1;background:transparent;border:0;outline:0;color:#fff;font:14px monospace}
-        .xp-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:15px}.xp-level{font-size:2.4rem;font-weight:900}.xp-progress{height:12px;background:var(--desc-bg);border-radius:99px;overflow:hidden;margin:10px 0}.xp-progress span{display:block;height:100%;background:linear-gradient(90deg,var(--accent-color),var(--accent-hover));transition:width .3s}.badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.xp-badge{padding:12px;border:1px solid var(--border-color);border-radius:12px;background:var(--bg-color)}.xp-badge.locked{opacity:.45;filter:grayscale(1)}.xp-badge strong{display:block;margin-bottom:4px}.xp-history{max-height:230px;overflow:auto;display:flex;flex-direction:column;gap:6px}.xp-history div{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border:1px solid var(--border-color);border-radius:9px;background:var(--desc-bg)}
-        @media(max-width:800px){.xp-hero{grid-template-columns:1fr}}
-
         /* CORRECTION SIDEBAR : les dossiers doivent rester visibles */
         .folder-scroll-area {
             flex: 1 1 auto !important;
@@ -892,17 +882,6 @@
 
     </div>
 
-    <div class="sidebar-nav-section collapsible-sidebar-section" id="sidebar-section-progression">
-        <button class="sidebar-section-toggle" type="button" onclick="toggleSidebarSection('progression')" aria-expanded="true">
-            <span class="sidebar-section-title">🏆 PROGRESSION</span>
-            <span class="sidebar-section-chevron" id="sidebar-chevron-progression">▾</span>
-        </button>
-        <div class="sidebar-section-content" id="sidebar-content-progression">
-            <button class="nav-item" id="xp-nav-btn" onclick="switchView('xp')"><span>🏆</span><span class="nav-label-text">Salon XP / Niveaux / Badges <span class="v62-new">V6.2</span></span></button>
-            <button class="nav-item" id="quests-nav-btn" onclick="switchView('quests')"><span>🎯</span><span class="nav-label-text">Système de quêtes <span class="v62-new">V6.2</span></span></button>
-        </div>
-    </div>
-
     <!-- Dossiers et catalogue -->
     <div class="sidebar-nav-section" style="border-bottom: none; flex: 1; display: flex; flex-direction: column; min-height: 0;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
@@ -972,14 +951,11 @@
                 <div class="v62-hub-head dashboard-collapse-header" onclick="toggleDashboardSection('hub')">
                     <div><div class="v62-hub-title">🚀 SKA Tool V6.2</div><div class="v62-hub-sub">Retrouve immédiatement les nouveaux espaces et outils.</div></div>
                     <div style="display:flex;align-items:center;gap:8px;">
-                        <button class="btn-sm" onclick="event.stopPropagation();questGenerate();switchView('quests')">🎯 Générer une quête</button>
                         <span class="dashboard-collapse-chevron">▾</span>
                     </div>
                 </div>
                 <div class="v62-hub-grid dashboard-collapse-body">
                     <div class="v62-hub-card" onclick="switchView('tool-network-map')"><strong>🗺️ Cartographie réseau <span class="v62-new">NEW</span></strong><span>Créer et relier tes équipements.</span></div>
-                    <div class="v62-hub-card" onclick="switchView('quests')"><strong>🎯 Quêtes <span class="v62-new">NEW</span></strong><span>Objectifs, progression et récompenses XP.</span></div>
-                    <div class="v62-hub-card" onclick="switchView('xp')"><strong>🏆 Salon XP</strong><span>Niveaux, badges et historique.</span></div>
                     <div class="v62-hub-card" onclick="switchView('tool-knowledge')"><strong>📚 Base de connaissances <span class="v62-new">NEW</span></strong><span>Centraliser tes fiches et mémos.</span></div>
                     <div class="v62-hub-card" onclick="switchView('tool-terminal')"><strong>⌨️ Terminal pédagogique</strong><span>Linux simulé avec fichiers et commandes.</span></div>
                 </div>
@@ -1403,20 +1379,6 @@ Tape « help » pour voir les commandes disponibles.
           </div>
         </div>
 
-        <!-- VUE : GAMIFICATION -->
-        <div id="view-xp" class="view-section">
-          <div class="category-card"><div class="category-title"><span>🏆 Salon XP — Niveaux / Badges / Progression</span><button class="btn-sm" onclick="renderXP()">🔄 Actualiser</button></div><div id="xp-content"></div></div>
-          <div class="category-card" style="margin-top:15px"><div class="category-title"><span>🎯 Quêtes actives</span><button class="btn-sm" onclick="switchView('quests')">Voir le salon des quêtes →</button></div><div id="xp-quests-preview"></div></div>
-        </div>
-
-        <!-- VUE : QUÊTES -->
-        <div id="view-quests" class="view-section">
-          <div class="category-card"><div class="category-title"><span>🎯 Système de quêtes</span><div class="ska-toolbar-wrap"><button class="btn-sm" onclick="questGenerate()">✨ Générer une quête</button><button class="btn-sm" onclick="questGenerate(3)">🎲 Générer 3</button></div></div>
-            <div class="muted-help" style="margin:8px 0 12px">Crée des objectifs aléatoires adaptés à ton travail dans SKA Tool. Les quêtes générées sont sauvegardées localement.</div>
-            <div id="quest-generator-output"></div>
-            <div id="quests-content"></div>
-          </div>
-        </div>
 
         <!-- VUE : CASE MANAGER / DOSSIERS D’ENQUÊTE -->
         <div id="view-tool-cases" class="view-section">
@@ -1539,10 +1501,6 @@ Tape « help » pour voir les commandes disponibles.
 
                 <div id="course-panel-learning" class="course-panel active">
                     <div class="tools-wrapper">
-                        <div class="tool-box">
-                            <h3>🏆 Progression XP — Cours</h3>
-                            <div id="course-xp-content"></div>
-                        </div>
                         <div class="tool-box">
                             <h3>🗺️ Parcours d’apprentissage</h3>
                             <div id="learning-list"></div>
@@ -2106,7 +2064,6 @@ const viewToolTerminal = document.getElementById('view-tool-terminal');
 const viewToolHash = document.getElementById('view-tool-hash');
 const viewToolNetworkMap = document.getElementById('view-tool-network-map');
 const viewToolKnowledge = document.getElementById('view-tool-knowledge');
-const viewXP = document.getElementById('view-xp');
 const viewQuests = document.getElementById('view-quests');
 const viewToolLearning = document.getElementById('view-tool-learning');
 
@@ -2132,8 +2089,6 @@ const toolTerminalBtn = document.getElementById('tool-terminal-btn');
 const toolHashBtn = document.getElementById('tool-hash-btn');
 const toolNetworkMapBtn = document.getElementById('tool-network-map-btn');
 const toolKnowledgeBtn = document.getElementById('tool-knowledge-btn');
-const xpNavBtn = document.getElementById('xp-nav-btn');
-const questsNavBtn = document.getElementById('quests-nav-btn');
 const toolCommandBtn = document.getElementById('tool-command-btn');
 const toolAnalyticsBtn = document.getElementById('tool-analytics-btn');
 const viewToolCommand = document.getElementById('view-tool-command');
@@ -2375,8 +2330,8 @@ function toggleSidebar() { document.body.classList.toggle('sidebar-collapsed'); 
 
 function switchView(viewName) {
   currentActiveView = viewName;
-  [viewDashboard, viewKanban, viewSchedule, viewNotepad, viewTools, viewPasswordManager, viewTutorials, viewToolConverter, viewToolSnippets, viewToolIdentity, viewToolLinkChecker, viewToolContacts, viewToolKeys, viewToolIP, viewToolAssets, viewToolAccounts, viewToolEmail, viewToolDNS, viewToolCases, viewToolTerminal, viewToolHash, viewToolNetworkMap, viewToolKnowledge, viewXP, viewQuests, viewToolCommand, viewAnalytics, viewToolLearning, viewCalendar, viewLab, v6AiView, v6LabsView, v6ProjectsView].forEach(v => v.classList.remove('active-view'));
-  [dashboardNavBtn, notepadNavBtn, kanbanNavBtn, scheduleNavBtn, toolsNavBtn, passwordManagerNavBtn, tutorialsNavBtn, toolConvBtn, toolSnippetsBtn, toolIdentityBtn, toolLinkcheckerBtn, toolContactsBtn, toolKeysBtn, toolIPBtn, toolAssetsBtn, toolAccountsBtn, toolEmailBtn, toolDNSBtn, toolCasesBtn, toolTerminalBtn, toolHashBtn, toolNetworkMapBtn, toolKnowledgeBtn, xpNavBtn, questsNavBtn, toolCommandBtn, toolAnalyticsBtn, toolLearningBtn, calendarNavBtn, labNavBtn, v6AiNavBtn, v6LabsNavBtn, v6ProjectsNavBtn].forEach(b => b.classList.remove('active'));
+  [viewDashboard, viewKanban, viewSchedule, viewNotepad, viewTools, viewPasswordManager, viewTutorials, viewToolConverter, viewToolSnippets, viewToolIdentity, viewToolLinkChecker, viewToolContacts, viewToolKeys, viewToolIP, viewToolAssets, viewToolAccounts, viewToolEmail, viewToolDNS, viewToolCases, viewToolTerminal, viewToolHash, viewToolNetworkMap, viewToolKnowledge, viewQuests, viewToolCommand, viewAnalytics, viewToolLearning, viewCalendar, viewLab, v6AiView, v6LabsView, v6ProjectsView].forEach(v => v.classList.remove('active-view'));
+  [dashboardNavBtn, notepadNavBtn, kanbanNavBtn, scheduleNavBtn, toolsNavBtn, passwordManagerNavBtn, tutorialsNavBtn, toolConvBtn, toolSnippetsBtn, toolIdentityBtn, toolLinkcheckerBtn, toolContactsBtn, toolKeysBtn, toolIPBtn, toolAssetsBtn, toolAccountsBtn, toolEmailBtn, toolDNSBtn, toolCasesBtn, toolTerminalBtn, toolHashBtn, toolNetworkMapBtn, toolKnowledgeBtn, questsNavBtn, toolCommandBtn, toolAnalyticsBtn, toolLearningBtn, calendarNavBtn, labNavBtn, v6AiNavBtn, v6LabsNavBtn, v6ProjectsNavBtn].forEach(b => b.classList.remove('active'));
 
   if (viewName === 'dashboard') {
     viewDashboard.classList.add('active-view');
@@ -2469,10 +2424,6 @@ function switchView(viewName) {
     viewToolNetworkMap.classList.add('active-view'); toolNetworkMapBtn.classList.add('active'); renderNetworkMap();
   } else if (viewName === 'tool-knowledge') {
     viewToolKnowledge.classList.add('active-view'); toolKnowledgeBtn.classList.add('active'); renderKnowledgeBase();
-  } else if (viewName === 'xp') {
-    viewXP.classList.add('active-view'); xpNavBtn.classList.add('active'); renderXP(); renderQuests();
-  } else if (viewName === 'quests') {
-    viewQuests.classList.add('active-view'); questsNavBtn.classList.add('active'); renderQuests();
   } else if (viewName === 'tool-cases') {
     viewToolCases.classList.add('active-view');
     toolCasesBtn.classList.add('active');
@@ -3685,7 +3636,6 @@ function addKanbanTask() {
   descInput.value = '';
   if(dueInput) dueInput.value = '';
   closeKanbanModal();
-  awardXP(15,'Nouvelle tâche créée');
 }
 
 function renderKanban() {
@@ -4673,9 +4623,7 @@ function toggleLearning(year, i, checked) {
   if (checked) learningDone[key] = true;
   else delete learningDone[key];
   localStorage.setItem('ska_learning_done', JSON.stringify(learningDone));
-  if (checked && !wasDone) awardXP(25, `Cours terminé : ${year} — ${learningSteps.find(s=>s.year===year)?.courses?.[i]?.name || 'Cours'}`);
   renderLearning();
-  renderCourseXP();
 }
 
 function openCourseDB() {
@@ -5025,23 +4973,26 @@ function skaTerminalRun(raw){
     case'clear': {const o=document.getElementById('ska-terminal-output');if(o)o.textContent='';skaTerminalSave();return;}
     default: out=`Commande inconnue : ${base}. Tape « help ».`;
   }
-  if(out)skaTerminalPrint(out); skaTerminalSave(); awardXP(1,'Commande terminal : '+base);
+  if(out)skaTerminalPrint(out); skaTerminalSave();
 }
+localStorage.removeItem('ska_xp_data');
+localStorage.removeItem('ska_quests');
+
 document.addEventListener('keydown',e=>{if(e.target?.id==='ska-terminal-input'){if(e.key==='Enter'){e.preventDefault();skaTerminalRun(e.target.value);}else if(e.key==='Tab'){e.preventDefault();}}});
 
 /* === HASH / ENCODAGES === */
-async function skaHashCompute(){const input=document.getElementById('hash-input')?.value||'';const algo=document.getElementById('hash-algo')?.value||'SHA-256';if(!window.crypto?.subtle){alert('Web Crypto API indisponible.');return;}const buf=await crypto.subtle.digest(algo,new TextEncoder().encode(input));const hex=[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');document.getElementById('hash-output').value=hex;awardXP(10,'Calcul de hash');}
+async function skaHashCompute(){const input=document.getElementById('hash-input')?.value||'';const algo=document.getElementById('hash-algo')?.value||'SHA-256';if(!window.crypto?.subtle){alert('Web Crypto API indisponible.');return;}const buf=await crypto.subtle.digest(algo,new TextEncoder().encode(input));const hex=[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');document.getElementById('hash-output').value=hex;;}
 function skaHashCopy(){const v=document.getElementById('hash-output')?.value||'';if(v)navigator.clipboard?.writeText(v);}
-function skaEncode(type){const input=document.getElementById('hash-input')?.value||'';let out='';if(type==='base64')out=btoa(unescape(encodeURIComponent(input)));if(type==='hex')out=[...new TextEncoder().encode(input)].map(b=>b.toString(16).padStart(2,'0')).join('');if(type==='url')out=encodeURIComponent(input);if(type==='html')out=input.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');document.getElementById('hash-output').value=out;awardXP(5,'Encodage '+type.toUpperCase());}
-function skaDecode(type){try{const v=document.getElementById('hash-input')?.value||'';let out=type==='base64'?decodeURIComponent(escape(atob(v))):v;document.getElementById('hash-output').value=out;awardXP(5,'Décodage Base64');}catch(e){document.getElementById('hash-output').value='Valeur Base64 invalide.';}}
+function skaEncode(type){const input=document.getElementById('hash-input')?.value||'';let out='';if(type==='base64')out=btoa(unescape(encodeURIComponent(input)));if(type==='hex')out=[...new TextEncoder().encode(input)].map(b=>b.toString(16).padStart(2,'0')).join('');if(type==='url')out=encodeURIComponent(input);if(type==='html')out=input.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');document.getElementById('hash-output').value=out;;}
+function skaDecode(type){try{const v=document.getElementById('hash-input')?.value||'';let out=type==='base64'?decodeURIComponent(escape(atob(v))):v;document.getElementById('hash-output').value=out;}catch(e){document.getElementById('hash-output').value='Valeur Base64 invalide.';}}
 
 /* === CARTOGRAPHIE RÉSEAU INTERACTIVE — V6.2 FIX === */
 let skaNetworkData=JSON.parse(localStorage.getItem('ska_network_map')||'null')||{nodes:[{id:'n1',name:'Routeur',type:'routeur',ip:'192.168.1.1',x:80,y:80},{id:'n2',name:'Switch',type:'switch',ip:'192.168.1.2',x:330,y:180},{id:'n3',name:'PC étudiant',type:'poste',ip:'192.168.1.20',x:600,y:80}],links:[['n1','n2'],['n2','n3']]};
 let skaNetworkSelected=[];
 function networkSave(){localStorage.setItem('ska_network_map',JSON.stringify(skaNetworkData));}
 function networkClear(){if(!confirm('Effacer toute la cartographie ?'))return;skaNetworkData={nodes:[],links:[]};skaNetworkSelected=[];networkSave();renderNetworkMap();showToast('🗺️ Cartographie effacée.');}
-function networkAddNode(){const types=['routeur','switch','serveur','poste','firewall','wifi'];const type=(prompt('Type :\nrouteur, switch, serveur, poste, firewall, wifi','serveur')||'').trim().toLowerCase();if(!type||!types.includes(type)){showToast('Type d’équipement invalide.');return;}const name=(prompt('Nom de l’équipement :','Nouvel équipement')||'').trim();if(!name)return;const ip=(prompt('Adresse IP (optionnel) :','')||'').trim();const id='n_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);skaNetworkData.nodes.push({id,name,type,ip,x:40+(skaNetworkData.nodes.length%4)*220,y:50+(Math.floor(skaNetworkData.nodes.length/4))*130});networkSave();renderNetworkMap();awardXP(10,'Nouvel équipement ajouté à la cartographie');}
-function networkConnectSelected(){if(skaNetworkSelected.length!==2){showToast('Sélectionne exactement 2 équipements.');return;}const [a,b]=skaNetworkSelected;if(a!==b&&!skaNetworkData.links.some(l=>(l[0]===a&&l[1]===b)||(l[0]===b&&l[1]===a)))skaNetworkData.links.push([a,b]);skaNetworkSelected=[];networkSave();renderNetworkMap();awardXP(5,'Liaison réseau créée');}
+function networkAddNode(){const types=['routeur','switch','serveur','poste','firewall','wifi'];const type=(prompt('Type :\nrouteur, switch, serveur, poste, firewall, wifi','serveur')||'').trim().toLowerCase();if(!type||!types.includes(type)){showToast('Type d’équipement invalide.');return;}const name=(prompt('Nom de l’équipement :','Nouvel équipement')||'').trim();if(!name)return;const ip=(prompt('Adresse IP (optionnel) :','')||'').trim();const id='n_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);skaNetworkData.nodes.push({id,name,type,ip,x:40+(skaNetworkData.nodes.length%4)*220,y:50+(Math.floor(skaNetworkData.nodes.length/4))*130});networkSave();renderNetworkMap();;}
+function networkConnectSelected(){if(skaNetworkSelected.length!==2){showToast('Sélectionne exactement 2 équipements.');return;}const [a,b]=skaNetworkSelected;if(a!==b&&!skaNetworkData.links.some(l=>(l[0]===a&&l[1]===b)||(l[0]===b&&l[1]===a)))skaNetworkData.links.push([a,b]);skaNetworkSelected=[];networkSave();renderNetworkMap();;}
 function networkNodeIcon(t){return ({routeur:'📡',switch:'🔀',serveur:'🖥️',poste:'💻',firewall:'🧱',wifi:'📶'})[t]||'🔹';}
 function networkDeleteNode(id){skaNetworkData.nodes=skaNetworkData.nodes.filter(n=>n.id!==id);skaNetworkData.links=skaNetworkData.links.filter(l=>l[0]!==id&&l[1]!==id);skaNetworkSelected=skaNetworkSelected.filter(x=>x!==id);networkSave();renderNetworkMap();}
 function renderNetworkMap(){const map=document.getElementById('ska-network-map');if(!map)return;map.innerHTML='';const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.style.cssText='position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1';map.appendChild(svg);const byId=id=>skaNetworkData.nodes.find(n=>n.id===id);skaNetworkData.links.forEach(([a,b])=>{const na=byId(a),nb=byId(b);if(!na||!nb)return;const line=document.createElementNS('http://www.w3.org/2000/svg','line');line.setAttribute('x1',na.x+90);line.setAttribute('y1',na.y+35);line.setAttribute('x2',nb.x+90);line.setAttribute('y2',nb.y+35);line.setAttribute('stroke','currentColor');line.setAttribute('stroke-width','3');line.setAttribute('opacity','.5');svg.appendChild(line);});
@@ -5052,30 +5003,9 @@ function renderNetworkMap(){const map=document.getElementById('ska-network-map')
 /* === BASE DE CONNAISSANCES === */
 let skaKnowledgeData=JSON.parse(localStorage.getItem('ska_knowledge_base')||'null')||[{id:'kb1',title:'Adressage IPv4 — mémo',tags:['réseau','IP'],content:'Rappels sur IPv4, masque, passerelle et sous-réseaux.'},{id:'kb2',title:'Commandes Linux essentielles',tags:['linux','terminal'],content:'pwd, ls, cd, ip a, ping, mkdir, touch, cat, history…'}];
 function saveKnowledge(){localStorage.setItem('ska_knowledge_base',JSON.stringify(skaKnowledgeData));}
-function knowledgeAdd(){const title=prompt('Titre de l’article :');if(!title)return;const tags=(prompt('Tags séparés par des virgules :','réseau')||'').split(',').map(x=>x.trim()).filter(Boolean);const content=prompt('Contenu :','Nouvelle fiche de connaissance…')||'';skaKnowledgeData.unshift({id:'kb'+Date.now(),title,tags,content});saveKnowledge();renderKnowledgeBase();awardXP(10,'Nouvel article ajouté à la base de connaissances');}
+function knowledgeAdd(){const title=prompt('Titre de l’article :');if(!title)return;const tags=(prompt('Tags séparés par des virgules :','réseau')||'').split(',').map(x=>x.trim()).filter(Boolean);const content=prompt('Contenu :','Nouvelle fiche de connaissance…')||'';skaKnowledgeData.unshift({id:'kb'+Date.now(),title,tags,content});saveKnowledge();renderKnowledgeBase();}
 function knowledgeDelete(id){skaKnowledgeData=skaKnowledgeData.filter(x=>x.id!==id);saveKnowledge();renderKnowledgeBase();}
 function renderKnowledgeBase(){const box=document.getElementById('kb-list');if(!box)return;const q=(document.getElementById('kb-search')?.value||'').toLowerCase();const data=skaKnowledgeData.filter(x=>(x.title+' '+x.content+' '+x.tags.join(' ')).toLowerCase().includes(q));box.innerHTML=data.length?data.map(x=>`<div class="ska-widget"><h3>📚 ${escapeHTML(x.title)}</h3><div>${x.tags.map(t=>`<span class="ska-tag">${escapeHTML(t)}</span>`).join('')}</div><p class="muted-help" style="white-space:pre-wrap">${escapeHTML(x.content)}</p><button class="btn-sm btn-danger" onclick="knowledgeDelete('${x.id}')">Supprimer</button></div>`).join(''):'<div class="today-empty">Aucun article trouvé.</div>';}
-
-/* === SYSTÈME DE QUÊTES — V6.2 FIX === */
-let skaQuestChecking=false;
-const defaultQuestData=[{id:'q1',title:'Premier pas',desc:'Gagne au moins 1 XP.',goal:1,metric:'xp',reward:25,done:false},{id:'q2',title:'Apprenti régulier',desc:'Réalise 5 actions récompensées en XP.',goal:5,metric:'actions',reward:50,done:false},{id:'q3',title:'Cartographe',desc:'Ajoute 3 équipements à la cartographie réseau.',goal:3,metric:'networkNodes',reward:75,done:false},{id:'q4',title:'Bibliothécaire',desc:'Crée 3 articles dans la base de connaissances.',goal:3,metric:'knowledge',reward:75,done:false}];
-let skaQuestData=JSON.parse(localStorage.getItem('ska_quests')||'null');if(!Array.isArray(skaQuestData)||!skaQuestData.length)skaQuestData=structuredClone(defaultQuestData);
-function saveQuests(){localStorage.setItem('ska_quests',JSON.stringify(skaQuestData));}
-function questValue(metric){if(metric==='xp')return skaXPData?.xp||0;if(metric==='actions')return skaXPData?.history?.length||0;if(metric==='networkNodes')return skaNetworkData?.nodes?.length||0;if(metric==='knowledge')return skaKnowledgeData?.length||0;if(metric==='terminal')return (skaXPData?.history||[]).filter(h=>String(h.reason).startsWith('Commande terminal')).length;return 0;}
-function checkQuests(){if(skaQuestChecking)return;skaQuestChecking=true;let changed=false;skaQuestData.forEach(q=>{if(!q.done&&questValue(q.metric)>=q.goal){q.done=true;changed=true;awardXP(q.reward,'Quête terminée : '+q.title);showToast('🎯 Quête terminée : '+q.title+' (+'+q.reward+' XP)');}});if(changed)saveQuests();skaQuestChecking=false;}
-const questTemplates=[{title:'Explorateur réseau',desc:'Ajoute 5 équipements à la cartographie réseau.',metric:'networkNodes',goal:5,reward:100},{title:'Archiviste',desc:'Crée 5 articles dans la base de connaissances.',metric:'knowledge',goal:5,reward:100},{title:'Maître du terminal',desc:'Exécute 10 commandes dans le terminal pédagogique.',metric:'terminal',goal:10,reward:120},{title:'Régularité',desc:'Réalise 15 actions récompensées en XP.',metric:'actions',goal:15,reward:100},{title:'Objectif XP',desc:'Atteins 250 XP au total.',metric:'xp',goal:250,reward:150}];
-function questGenerate(count=1){const output=document.getElementById('quest-generator-output');let created=[];for(let i=0;i<count;i++){const t=questTemplates[Math.floor(Math.random()*questTemplates.length)];skaQuestData.push({...t,id:'q'+Date.now()+'_'+i+'_'+Math.random().toString(36).slice(2,7),done:false});created.push(t.title);}saveQuests();renderQuests();if(output)output.innerHTML='<div class="tool-box" style="margin-bottom:12px"><strong>✨ '+created.length+' quête'+(created.length>1?'s':'')+' générée'+(created.length>1?'s':'')+'</strong><div class="muted-help">'+created.map(escapeHTML).join(' • ')+'</div></div>';showToast('✨ Quête générée avec succès.');}
-function renderQuests(){const box=document.getElementById('quests-content'),preview=document.getElementById('xp-quests-preview');if(!box&&!preview)return;if(!skaQuestData.length){if(box)box.innerHTML='<div class="today-empty">Aucune quête. Clique sur « Générer une quête ».</div>';return;}const html=skaQuestData.map(q=>{const v=Math.min(q.goal,questValue(q.metric)),pct=q.goal?Math.round(v/q.goal*100):0;return `<div class="tool-box" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px"><div><strong>${q.done?'✅':'🎯'} ${escapeHTML(q.title)}</strong><div class="muted-help">${escapeHTML(q.desc)}</div></div><div><strong>+${q.reward} XP</strong>${q.done?'':' <button class="btn-sm btn-danger" onclick="questDelete(\''+q.id+'\')">🗑</button>'}</div></div><div class="xp-progress" style="margin-top:10px"><span style="width:${pct}%"></span></div><div class="muted-help" style="margin-top:5px">${v}/${q.goal} • ${pct}%</div></div>`}).join('');if(box)box.innerHTML=html;if(preview)preview.innerHTML=skaQuestData.filter(q=>!q.done).slice(0,3).map(q=>`<div class="ska-mini-row"><span>🎯 ${escapeHTML(q.title)}</span><strong>+${q.reward} XP</strong></div>`).join('')||'<div class="today-empty">Toutes les quêtes sont terminées 🎉</div>'; }
-function questDelete(id){skaQuestData=skaQuestData.filter(q=>q.id!==id);saveQuests();renderQuests();}
-
-/* === XP / NIVEAUX / BADGES === */
-let skaXPData=JSON.parse(localStorage.getItem('ska_xp_data')||'{"xp":0,"history":[],"badges":[]}');
-const skaBadges=[{id:'first',icon:'🌱',name:'Premier pas',desc:'Gagner ses premiers XP',test:x=>x>=1},{id:'hundred',icon:'💯',name:'100 XP',desc:'Atteindre 100 XP',test:x=>x>=100},{id:'fivehundred',icon:'🔥',name:'Acharné',desc:'Atteindre 500 XP',test:x=>x>=500},{id:'thousand',icon:'🏆',name:'Expert',desc:'Atteindre 1 000 XP',test:x=>x>=1000},{id:'ten-actions',icon:'⚡',name:'Régulier',desc:'Réaliser 10 actions',test:(x,d)=>d.history.length>=10}];
-function saveXP(){localStorage.setItem('ska_xp_data',JSON.stringify(skaXPData));}
-function awardXP(amount,reason){if(!amount)return;const oldLevel=Math.floor(skaXPData.xp/100)+1;skaXPData.xp+=amount;skaXPData.history.unshift({amount,reason,date:new Date().toLocaleString('fr-FR')});skaXPData.history=skaXPData.history.slice(0,50);const unlocked=[];skaBadges.forEach(b=>{if(!skaXPData.badges.includes(b.id)&&b.test(skaXPData.xp,skaXPData)){skaXPData.badges.push(b.id);unlocked.push(b);}});saveXP();if(document.getElementById('xp-content'))renderXP();if(document.getElementById('quests-content')&&!skaQuestChecking)renderQuests();if(unlocked.length)showToast('🏆 Badge débloqué : '+unlocked.map(b=>b.name).join(', '));if(Math.floor(skaXPData.xp/100)+1>oldLevel)showToast('🎉 Niveau supérieur !');}
-function renderCourseXP(){const box=document.getElementById('course-xp-content');if(!box)return;const xp=skaXPData.xp,level=Math.floor(xp/100)+1,into=xp%100;const total=learningSteps.reduce((n,s)=>n+s.courses.length,0),done=Object.keys(learningDone).length;box.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;"><div><div class="muted-help">NIVEAU</div><strong style="font-size:1.8rem;">${level}</strong></div><div><div class="muted-help">XP TOTAL</div><strong style="font-size:1.8rem;">${xp}</strong></div><div><div class="muted-help">COURS VALIDÉS</div><strong style="font-size:1.8rem;">${done}/${total}</strong></div></div><div class="xp-progress" style="margin-top:12px;"><span style="width:${into}%"></span></div><div class="muted-help" style="margin-top:6px;">Chaque cours terminé rapporte <strong>+25 XP</strong>. ${into}/100 XP vers le niveau ${level+1}.</div>`;}
-
-function renderXP(){const box=document.getElementById('xp-content');if(!box)return;const xp=skaXPData.xp,level=Math.floor(xp/100)+1,into=xp%100;box.innerHTML=`<div class="xp-hero"><div class="tool-box"><div class="muted-help">NIVEAU</div><div class="xp-level">${level}</div><div><strong>${xp} XP</strong> • ${into}/100 XP vers le niveau ${level+1}</div><div class="xp-progress"><span style="width:${into}%"></span></div><div class="muted-help">Gagne de l'XP en travaillant dans SKA Tool : TP, tâches, hash, encodages et projets.</div></div><div class="tool-box"><h3>🏆 Badges</h3><div class="badge-grid">${skaBadges.map(b=>{const ok=skaXPData.badges.includes(b.id);return `<div class="xp-badge ${ok?'':'locked'}"><strong>${b.icon} ${b.name}</strong><span class="muted-help">${b.desc}</span></div>`}).join('')}</div></div></div><div class="tool-box" style="margin-top:15px"><h3>⚡ Historique XP</h3><div class="xp-history">${skaXPData.history.length?skaXPData.history.map(h=>`<div><span>${escapeHTML(h.reason)}<br><small class="muted-help">${escapeHTML(h.date)}</small></span><strong>+${h.amount} XP</strong></div>`).join(''):'<div class="muted-help">Aucune activité pour le moment.</div>'}</div></div>`;}
 
 function showToast(message) {
   let toast = document.getElementById('ska-move-toast');
@@ -5101,14 +5031,15 @@ function showToast(message) {
 }
 
 
+localStorage.removeItem('ska_xp_data');
+localStorage.removeItem('ska_quests');
+
 document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openGlobalSearch()}if(e.key==='Escape'){closeGlobalSearch();closeDashboardSettings();closeTagManager();closeCaseModal()}});
 renderTutorials();
 renderSelectedCourseFiles();
-renderXP();
-renderQuests();
 renderNetworkMap();
 ['course-exercise-files','course-correction-files'].forEach(id=>document.getElementById(id)?.addEventListener('change',renderSelectedCourseFiles));
 </script>
 <div class="modal-overlay" id="notifications-modal" onclick="if(event.target===this)closeNotifications()"><div class="modal-card"><div class="modal-header"><span class="modal-title">🔔 Centre de notifications</span><div class="ska-toolbar-wrap"><button class="btn-sm" onclick="markAllNotificationsRead()">✓ Tout lire</button><button class="btn-sm btn-danger" onclick="clearReadNotifications()">🗑 Effacer lues</button><button class="btn-close-modal" onclick="closeNotifications()">✕</button></div></div><div class="ska-toolbar-wrap" style="margin-bottom:10px"><button class="btn-sm" onclick="setNotificationFilter('all')">Toutes</button><button class="btn-sm" onclick="setNotificationFilter('unread')">Non lues</button><button class="btn-sm" onclick="setNotificationFilter('danger')">🔴 Urgentes</button><button class="btn-sm" onclick="setNotificationFilter('warn')">🟠 Échéances</button></div><div id="notifications-list"></div></div></div>
 </body>
-</html>
+</html>S
