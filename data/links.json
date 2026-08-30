@@ -2,7 +2,7 @@
   "app": "SKA TOOL",
   "version": 8,
   "shared": true,
-  "updatedAt": "2026-08-30T12:31:06.373Z",
+  "updatedAt": "2026-08-30T12:31:10.525Z",
   "storage": {
     "ska_contacts_data": "[]",
     "ska_note_title": "Mon Document",
@@ -22,6 +22,6 @@
     "ska_calendar_events": "[]",
     "osint_dashboard_cols": "2",
     "ska_schedule_tasks": "[{\"id\":\"s1\",\"day\":\"lundi\",\"hour\":\"09:00\",\"task\":\"Revue des actualités & veille\"},{\"id\":\"s2\",\"day\":\"mardi\",\"hour\":\"10:00\",\"task\":\"Investigations OSINT\"},{\"id\":\"s3\",\"day\":\"mercredi\",\"hour\":\"14:00\",\"task\":\"Automatisation scripts\"}]",
-    "osint_dashboard_items": "[]"
+    "osint_dashboard_items": "[{\"id\":\"i_1788093070524\",\"title\":\"usersearch.com\",\"type\":\"link\",\"url\":\"https://usersearch.com/search_results\",\"subtitle\":\"usersearch.com\",\"folderId\":\"f1\",\"icon\":\"https://www.google.com/s2/favicons?domain=usersearch.com&sz=64\",\"isFavorite\":false,\"tags\":[],\"description\":\"\"}]"
   }
 }
