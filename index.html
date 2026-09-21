@@ -519,6 +519,7 @@
             .explorer-sidebar { border-right: none; border-bottom: 1px solid var(--border-color); }
         }
     </style>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 <!-- SIDEBAR -->
@@ -615,7 +616,9 @@
 <div class="explorer-main">
 <div class="explorer-toolbar">
 <div id="current-folder-label" style="font-size:0.9rem; font-weight:600;">Tous les éléments</div>
-<div style="display:flex; gap:8px;">
+<div id="drive-status" style="font-size:.78rem;color:var(--text-muted);margin-left:12px;">☁️ Google Drive non connecté</div>
+<div style="display:flex; gap:8px;align-items:center;">
+<button class="btn btn-secondary" style="padding:7px 10px;" onclick="connectGoogleDrive()" title="Connecter Google Drive"><i class="fa-brands fa-google-drive"></i> Drive</button>
 <button class="btn-icon" onclick="setExplorerView('grid')" title="Grille"><i class="fa-solid fa-grip"></i></button>
 <button class="btn-icon" onclick="setExplorerView('list')" title="Liste"><i class="fa-solid fa-list"></i></button>
 </div>
@@ -748,6 +751,11 @@
 <label class="form-label">Description (optionnelle)</label>
 <input class="form-control" id="item-desc" placeholder="Informations complémentaires..." type="text"/>
 </div>
+<div style="margin:10px 0;padding:10px;border:1px solid var(--border-color);border-radius:10px;background:var(--bg-card);">
+<div style="font-weight:600;font-size:.85rem;margin-bottom:5px;">☁️ Stockage Google Drive</div>
+<div style="font-size:.75rem;color:var(--text-muted);margin-bottom:8px;">Le PDF sera envoyé dans ton Google Drive pour être retrouvé sur tes autres PC. Connecte Drive avant l'envoi.</div>
+<input class="form-control" id="google-client-id" placeholder="Client ID Google OAuth (à configurer une seule fois)" type="text"/>
+</div>
 <div style="display:flex; gap:10px; justify-content:flex-end;">
 <button class="btn btn-secondary" onclick="closeAddFileModal()">Annuler</button>
 <button class="btn btn-primary" onclick="saveFileItem()">Enregistrer le fichier</button>
@@ -873,18 +881,145 @@
             switchView('explorer');
         }
 
-        // FICHIERS
-        function openAddFileModal() { document.getElementById('file-modal').classList.add('open'); }
-        function closeAddFileModal() { document.getElementById('file-modal').classList.remove('open'); }
+        // FICHIERS + GOOGLE DRIVE
+        const DRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+        const DRIVE_FOLDER_NAME = 'SKA Tool - BTS CIEL';
+        let driveAccessToken = null;
+        let driveTokenClient = null;
+        let driveFolderId = null;
 
-        function toggleIconInput(type) {
-            document.getElementById('emoji-input-group').style.display = (type === 'emoji') ? 'flex' : 'none';
+        function getGoogleClientId() {
+            return localStorage.getItem('ska_google_client_id') || '';
         }
 
-        async function handlePdfSelection(input) {
+        function setDriveStatus(text, ok=false) {
+            const el = document.getElementById('drive-status');
+            if (el) {
+                el.textContent = (ok ? '☁️ ' : '⚠️ ') + text;
+                el.style.color = ok ? 'var(--success-color)' : 'var(--text-muted)';
+            }
+        }
+
+        function initGoogleDriveClient() {
+            const clientId = getGoogleClientId();
+            if (!clientId) return false;
+            if (!window.google || !google.accounts || !google.accounts.oauth2) return false;
+            driveTokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: clientId,
+                scope: DRIVE_SCOPE,
+                callback: (response) => {
+                    if (response.error) {
+                        console.error(response);
+                        setDriveStatus('Connexion Google refusée');
+                        return;
+                    }
+                    driveAccessToken = response.access_token;
+                    localStorage.setItem('ska_google_connected', '1');
+                    loadDrivePdfs().catch(err => {
+                        console.error(err);
+                        setDriveStatus('Erreur de lecture Google Drive');
+                    });
+                }
+            });
+            return true;
+        }
+
+        async function connectGoogleDrive() {
+            let clientId = getGoogleClientId();
+            if (!clientId) {
+                clientId = prompt('Colle ici ton Client ID OAuth Google (format ...apps.googleusercontent.com) :', '');
+                if (!clientId) return;
+                localStorage.setItem('ska_google_client_id', clientId.trim());
+            }
+            if (!initGoogleDriveClient()) {
+                return alert('Google Identity Services n’est pas encore chargé. Recharge la page puis réessaie.');
+            }
+            driveTokenClient.requestAccessToken({ prompt: 'consent' });
+        }
+
+        async function driveFetch(url, options={}) {
+            if (!driveAccessToken) throw new Error('Google Drive non connecté');
+            const headers = new Headers(options.headers || {});
+            headers.set('Authorization', 'Bearer ' + driveAccessToken);
+            const res = await fetch(url, {...options, headers});
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`Google Drive ${res.status}: ${text}`);
+            }
+            return res;
+        }
+
+        async function ensureDriveFolder() {
+            if (driveFolderId) return driveFolderId;
+            const q = encodeURIComponent(`name = '${DRIVE_FOLDER_NAME.replace(/'/g, "\\'")}' and mimeType = 'application/vnd.google-apps.folder' and trashed = false`);
+            const res = await driveFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&spaces=drive&fields=files(id,name)&pageSize=10`);
+            const data = await res.json();
+            if (data.files && data.files.length) {
+                driveFolderId = data.files[0].id;
+                return driveFolderId;
+            }
+            const create = await driveFetch('https://www.googleapis.com/drive/v3/files?fields=id,name', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({name: DRIVE_FOLDER_NAME, mimeType:'application/vnd.google-apps.folder'})
+            });
+            const folder = await create.json();
+            driveFolderId = folder.id;
+            return driveFolderId;
+        }
+
+        async function uploadPdfToDrive(file, category, description='') {
+            const folderId = await ensureDriveFolder();
+            const metadata = {
+                name: file.name,
+                mimeType: 'application/pdf',
+                parents: [folderId],
+                description: description || '',
+                appProperties: { skaTool: 'true', category: category || 'Cours BTS CIEL' }
+            };
+            const boundary = '-------skaToolBoundary' + Date.now();
+            const body = new Blob([
+                `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n`,
+                JSON.stringify(metadata),
+                `\r\n--${boundary}\r\nContent-Type: application/pdf\r\n\r\n`,
+                file,
+                `\r\n--${boundary}--`
+            ], {type: `multipart/related; boundary=${boundary}`});
+            const res = await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,mimeType,webViewLink,description,appProperties', {
+                method:'POST',
+                headers:{'Content-Type': `multipart/related; boundary=${boundary}`},
+                body
+            });
+            return await res.json();
+        }
+
+        async function loadDrivePdfs() {
+            const folderId = await ensureDriveFolder();
+            const q = encodeURIComponent(`'${folderId}' in parents and trashed = false and mimeType = 'application/pdf'`);
+            const res = await driveFetch(`https://www.googleapis.com/drive/v3/files?q=${q}&spaces=drive&orderBy=name&fields=files(id,name,mimeType,webViewLink,description,appProperties,modifiedTime,size)&pageSize=100`);
+            const data = await res.json();
+            const cloud = (data.files || []).map(f => ({
+                id: 'drive:' + f.id,
+                driveId: f.id,
+                title: f.name,
+                url: f.webViewLink || `https://drive.google.com/file/d/${f.id}/view`,
+                category: (f.appProperties && f.appProperties.category) || 'Cours BTS CIEL',
+                iconType: 'emoji', emoji: '📕',
+                desc: f.description || 'PDF Google Drive',
+                type: 'pdf-cloud', favorite: false,
+                modifiedTime: f.modifiedTime, size: f.size
+            }));
+            const localNonCloud = state.resources.filter(r => !r.driveId && r.type !== 'pdf-cloud');
+            state.resources = [...localNonCloud, ...cloud];
+            localStorage.setItem('ska_resources', JSON.stringify(state.resources));
+            setDriveStatus(`${cloud.length} PDF dans Google Drive`, true);
+            renderExplorer();
+        }
+
+        function handlePdfSelection(input) {
             const file = input.files && input.files[0];
             const label = document.getElementById('pdf-selected');
-            if (!file) { label.textContent = 'Aucun PDF sélectionné (ou ajoutez simplement un lien ci-dessous).'; return; }
+            if (!file) { label.textContent = 'Aucun PDF sélectionné.'; return; }
             if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
                 input.value = '';
                 label.textContent = 'Fichier refusé : sélectionnez uniquement un PDF.';
@@ -897,51 +1032,22 @@
             label.textContent = `${file.name} — ${(file.size / 1024 / 1024).toFixed(2)} Mo`;
         }
 
-        function openPdfDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open('ska_tool_files', 1);
-                request.onupgradeneeded = () => request.result.createObjectStore('pdfs');
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
+        function openAddFileModal() {
+            document.getElementById('file-modal').classList.add('open');
+            const input = document.getElementById('google-client-id');
+            if (input) input.value = getGoogleClientId();
         }
+        function closeAddFileModal() { document.getElementById('file-modal').classList.remove('open'); }
 
-        async function storePdf(id, file) {
-            const db = await openPdfDB();
-            return new Promise((resolve, reject) => {
-                const tx = db.transaction('pdfs', 'readwrite');
-                tx.objectStore('pdfs').put(file, String(id));
-                tx.oncomplete = resolve;
-                tx.onerror = () => reject(tx.error);
-            });
-        }
-
-        async function getPdf(id) {
-            const db = await openPdfDB();
-            return new Promise((resolve, reject) => {
-                const req = db.transaction('pdfs', 'readonly').objectStore('pdfs').get(String(id));
-                req.onsuccess = () => resolve(req.result);
-                req.onerror = () => reject(req.error);
-            });
-        }
-
-        async function deletePdf(id) {
-            try {
-                const db = await openPdfDB();
-                const tx = db.transaction('pdfs', 'readwrite');
-                tx.objectStore('pdfs').delete(String(id));
-            } catch(e) {}
+        function toggleIconInput(type) {
+            document.getElementById('emoji-input-group').style.display = (type === 'emoji') ? 'flex' : 'none';
         }
 
         async function openResource(id) {
             const item = state.resources.find(r => r.id === id);
             if (!item) return;
-            if (item.type === 'pdf') {
-                const file = await getPdf(id);
-                if (!file) return alert('PDF introuvable dans le stockage local.');
-                const url = URL.createObjectURL(file);
-                window.open(url, '_blank');
-                setTimeout(() => URL.revokeObjectURL(url), 60000);
+            if (item.type === 'pdf-cloud') {
+                window.open(`https://drive.google.com/file/d/${item.driveId}/view`, '_blank');
             } else if (item.type === 'note') {
                 viewNote(id);
             } else {
@@ -958,32 +1064,53 @@
             const iconType = document.getElementById('item-icon-type').value;
             const emoji = document.getElementById('item-emoji').value.trim();
             const desc = document.getElementById('item-desc').value.trim();
+            const clientInput = document.getElementById('google-client-id');
+            if (clientInput && clientInput.value.trim()) localStorage.setItem('ska_google_client_id', clientInput.value.trim());
 
             if (pdf && pdf.type !== 'application/pdf' && !pdf.name.toLowerCase().endsWith('.pdf')) return alert('Sélectionnez uniquement un fichier PDF.');
             if (!pdf && !url) return alert('Sélectionnez un PDF ou renseignez une URL.');
             if (!title) return alert('Titre requis.');
             if (!pdf && !url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
 
-            const id = Date.now();
-            const item = pdf ? {
-                id, title: title.endsWith('.pdf') ? title : title + '.pdf', url: '', category,
-                iconType: 'emoji', emoji: emoji || '📕', desc: desc || 'Document PDF', type: 'pdf', favorite: false
-            } : {
-                id, title, url, category, iconType, emoji, desc, type: 'link', favorite: false
-            };
+            if (pdf) {
+                try {
+                    if (!driveAccessToken) {
+                        if (!initGoogleDriveClient()) return alert('Configure ton Client ID Google puis connecte Google Drive avant d’envoyer un PDF.');
+                        await new Promise((resolve, reject) => {
+                            const oldStatus = driveTokenClient.callback;
+                            driveTokenClient.callback = (r) => {
+                                if (r.error) reject(r);
+                                else { driveAccessToken = r.access_token; resolve(); }
+                            };
+                            driveTokenClient.requestAccessToken({prompt:'consent'});
+                        });
+                    }
+                    setDriveStatus('Envoi du PDF en cours…');
+                    const cloud = await uploadPdfToDrive(pdf, category, desc);
+                    setDriveStatus('PDF envoyé dans Google Drive', true);
+                    await loadDrivePdfs();
+                    closeAddFileModal();
+                    pdfInput.value = '';
+                    document.getElementById('pdf-selected').textContent = 'Aucun PDF sélectionné.';
+                    document.getElementById('item-title').value = '';
+                    document.getElementById('item-desc').value = '';
+                    alert('PDF envoyé dans Google Drive. Tu le retrouveras sur tes autres PC avec le même compte Google.');
+                    return;
+                } catch (e) {
+                    console.error(e);
+                    setDriveStatus('Échec de l’envoi');
+                    return alert('Impossible d’envoyer le PDF dans Google Drive. Vérifie la configuration Google et ton autorisation.');
+                }
+            }
 
-            if (pdf) await storePdf(id, pdf);
-            state.resources.push(item);
+            state.resources.push({
+                id: Date.now(), title, url, category,
+                iconType, emoji: iconType === 'emoji' ? (emoji || '📄') : '',
+                desc: desc || 'Lien web', type: 'link', favorite: false
+            });
             localStorage.setItem('ska_resources', JSON.stringify(state.resources));
             renderExplorer();
             closeAddFileModal();
-
-            document.getElementById('item-title').value = '';
-            document.getElementById('item-url').value = '';
-            document.getElementById('item-emoji').value = '';
-            document.getElementById('item-desc').value = '';
-            pdfInput.value = '';
-            document.getElementById('pdf-selected').textContent = 'Aucun PDF sélectionné (ou ajoutez simplement un lien ci-dessous).';
         }
 
         // EXPLORATEUR
@@ -1002,98 +1129,96 @@
         }
 
         function getIconHTML(resource) {
-            if (resource.type === 'pdf') return '<span style="color:#ef4444;font-size:2rem;">📕</span>';
-            if (resource.iconType === 'emoji' && resource.emoji) {
-                return `<span>${resource.emoji}</span>`;
-            } else {
-                try {
-                    const urlObj = new URL(resource.url);
-                    return `<img src="https://www.google.com/s2/favicons?domain=${urlObj.hostname}&sz=64" alt="favicon" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-file\'></i>';">`;
-                } catch(e) {
-                    return `<i class="fa-solid fa-file"></i>`;
-                }
-            }
+            if (resource.type === 'pdf-cloud') return '<span style="color:#ef4444;font-size:2rem;">📕</span>';
+            if (resource.iconType === 'emoji' && resource.emoji) return `<span>${resource.emoji}</span>`;
+            try {
+                const urlObj = new URL(resource.url);
+                return `<img src="https://www.google.com/s2/favicons?domain=${urlObj.hostname}&sz=64" alt="favicon">`;
+            } catch(e) { return '<i class="fa-solid fa-file"></i>'; }
         }
 
         function renderExplorer() {
             const grid = document.getElementById('explorer-grid');
             let filtered = state.resources;
-
             if (currentCategory === 'favoris') filtered = state.resources.filter(r => r.favorite);
             else if (currentCategory !== 'all') filtered = state.resources.filter(r => r.category === currentCategory);
-
             document.getElementById('stat-resources-count').innerText = state.resources.length;
             document.getElementById('stat-favorites-count').innerText = state.resources.filter(r => r.favorite).length;
-
-            if (filtered.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding:30px;">Dossier vide.</div>`;
+            if (!filtered.length) {
+                grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);padding:30px;">Dossier vide.</div>`;
                 return;
             }
-
             grid.innerHTML = filtered.map(r => `
                 <div class="file-card">
                     <div class="file-icon">${getIconHTML(r)}</div>
                     <div class="file-info">
-                        <div class="file-name">${r.title}</div>
-                        <div class="file-meta">${r.category} - ${r.desc || 'Document'}</div>
+                        <div class="file-name">${escapeHtml(r.title)}</div>
+                        <div class="file-meta">${escapeHtml(r.category)} - ${escapeHtml(r.desc || 'Document')}</div>
                     </div>
                     <div class="file-actions">
-                        <button class="btn-icon" style="width:30px;height:30px;" onclick="toggleFavorite(${r.id})">
-                            <i class="${r.favorite ? 'fa-solid' : 'fa-regular'} fa-star" style="color:${r.favorite ? 'var(--warning-color)' : ''}"></i>
-                        </button>
-                        <button class="btn-icon" style="width:30px;height:30px;" title="Ouvrir" onclick="openResource(${r.id})"><i class="fa-solid ${r.type === 'pdf' ? 'fa-file-pdf' : r.type === 'note' ? 'fa-eye' : 'fa-arrow-up-right-from-square'}"></i></button>
-                        <button class="btn-icon" style="width:30px;height:30px;" onclick="deleteResource(${r.id})"><i class="fa-solid fa-trash" style="color:var(--danger-color)"></i></button>
+                        <button class="btn-icon" style="width:30px;height:30px;" onclick="toggleFavorite('${String(r.id).replace(/'/g,"\\'")}')"><i class="${r.favorite ? 'fa-solid' : 'fa-regular'} fa-star" style="color:${r.favorite ? 'var(--warning-color)' : ''}"></i></button>
+                        <button class="btn-icon" style="width:30px;height:30px;" title="Ouvrir" onclick="openResource('${String(r.id).replace(/'/g,"\\'")}')"><i class="fa-solid ${r.type === 'pdf-cloud' ? 'fa-file-pdf' : r.type === 'note' ? 'fa-eye' : 'fa-arrow-up-right-from-square'}"></i></button>
+                        <button class="btn-icon" style="width:30px;height:30px;" onclick="deleteResource('${String(r.id).replace(/'/g,"\\'")}')"><i class="fa-solid fa-trash" style="color:var(--danger-color)"></i></button>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
         }
 
         function viewNote(id) {
-            const note = state.resources.find(r => r.id === id);
-            if(note && note.content) {
-                alert(`--- ${note.title} ---\n\n${note.content}`);
-            }
+            const note = state.resources.find(r => String(r.id) === String(id));
+            if (note && note.content) alert(`--- ${note.title} ---\n\n${note.content}`);
         }
 
         function toggleFavorite(id) {
-            const item = state.resources.find(r => r.id === id);
-            if(item) {
+            const item = state.resources.find(r => String(r.id) === String(id));
+            if (item) {
                 item.favorite = !item.favorite;
                 localStorage.setItem('ska_resources', JSON.stringify(state.resources));
                 renderExplorer();
             }
         }
 
-        function deleteResource(id) {
-            const item = state.resources.find(r => r.id === id);
-            if (item && item.type === 'pdf') deletePdf(id);
-            state.resources = state.resources.filter(r => r.id !== id);
+        async function deleteResource(id) {
+            const item = state.resources.find(r => String(r.id) === String(id));
+            if (!item) return;
+            if (!confirm(`Supprimer « ${item.title} » ?`)) return;
+            if (item.type === 'pdf-cloud' && item.driveId) {
+                try {
+                    if (!driveAccessToken) return alert('Connecte Google Drive avant de supprimer ce PDF.');
+                    await driveFetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(item.driveId)}`, {method:'DELETE'});
+                    await loadDrivePdfs();
+                    return;
+                } catch(e) {
+                    console.error(e);
+                    return alert('Impossible de supprimer le PDF de Google Drive.');
+                }
+            }
+            state.resources = state.resources.filter(r => String(r.id) !== String(id));
             localStorage.setItem('ska_resources', JSON.stringify(state.resources));
             renderExplorer();
         }
 
-
         // OUTILS SECONDAIRES
-            try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); }
-            catch(e) { document.getElementById('calc-display').value = 'Erreur'; }
-        }
-
         function generatePassword() {
             const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
-            let len = parseInt(document.getElementById('pass-length').value);
+            const len = parseInt(document.getElementById('pass-length').value, 10);
             let res = "";
-            for(let i=0; i<len; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+            for (let i=0; i<len; i++) res += chars.charAt(Math.floor(Math.random()*chars.length));
             document.getElementById('password-output').innerText = res;
         }
 
         async function analyzeIP() {
             const ip = document.getElementById('ip-input').value.trim();
-            if(!ip) return;
+            if (!ip) return;
+            const out = document.getElementById('ip-result');
             try {
-                const res = await fetch(`http://ip-api.com/json/${ip}`);
+                const res = await fetch(`https://ipapi.co/${encodeURIComponent(ip)}/json/`);
                 const data = await res.json();
-                document.getElementById('ip-result').innerText = JSON.stringify(data, null, 2);
-            } catch(e) { document.getElementById('ip-result').innerText = "Erreur de requête."; }
+                out.innerText = JSON.stringify(data, null, 2);
+            } catch(e) { out.innerText = "Erreur de requête."; }
         }
 
         // INITIALISATION
@@ -1102,6 +1227,11 @@
             renderExplorer();
             generatePassword();
             document.getElementById('dash-quick-note').value = localStorage.getItem('ska_quicknote') || '';
+            if (getGoogleClientId()) {
+                setDriveStatus('Client Google configuré — clique sur Drive pour te connecter');
+            }
+            const clientInput = document.getElementById('google-client-id');
+            if (clientInput) clientInput.value = getGoogleClientId();
         });
     </script>
 </body>
