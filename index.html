@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKA Tool V7.0 - Workspace Complet</title>
+    <title>SKA Tool V8.0 - Dynamic Workspace</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -283,7 +283,7 @@
         .folder-item {
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
             padding: 10px 12px;
             border-radius: var(--radius-md);
             color: var(--text-muted);
@@ -291,6 +291,12 @@
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
+        }
+
+        .folder-item-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .folder-item:hover, .folder-item.active {
@@ -352,9 +358,17 @@
             height: 60px;
             background-color: rgba(255, 255, 255, 0.02);
             border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .file-icon img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
         }
 
         .list-view .file-icon { height: auto; font-size: 1.2rem; background: none; }
+        .list-view .file-icon img { width: 20px; height: 20px; }
 
         .file-info { display: flex; flex-direction: column; gap: 4px; flex: 1; }
         .file-name { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
@@ -479,7 +493,7 @@
         <div class="sidebar-header">
             <a href="#" class="brand">
                 <div class="brand-icon"><i class="fa-solid fa-layer-group"></i></div>
-                <span>SKA Tool <small style="font-size:0.6em; color:var(--accent-color);">V7.0</small></span>
+                <span>SKA Tool <small style="font-size:0.6em; color:var(--accent-color);">V8.0</small></span>
             </a>
         </div>
         <ul class="nav-menu">
@@ -552,23 +566,27 @@
                         <h1 class="page-title">Explorateur Avancé</h1>
                         <p class="page-subtitle">Gérez vos fichiers, raccourcis web et documentations par dossier.</p>
                     </div>
-                    <button class="btn btn-primary" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Nouveau fichier/lien</button>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-secondary" onclick="openFolderModal()"><i class="fa-solid fa-folder-plus"></i> Nouveau Dossier</button>
+                        <button class="btn btn-primary" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Nouveau fichier/lien</button>
+                    </div>
                 </div>
 
                 <div class="explorer-container">
                     <div class="explorer-sidebar">
                         <span class="form-label">Emplacements</span>
                         <ul class="folder-tree">
-                            <li class="folder-item active" onclick="setCategoryFilter('all', this)"><i class="fa-solid fa-border-all"></i> Tous les éléments</li>
-                            <li class="folder-item" onclick="setCategoryFilter('favoris', this)"><i class="fa-solid fa-star" style="color:var(--warning-color);"></i> Favoris</li>
+                            <li class="folder-item active" onclick="setCategoryFilter('all', this)">
+                                <div class="folder-item-content"><i class="fa-solid fa-border-all"></i> Tous les éléments</div>
+                            </li>
+                            <li class="folder-item" onclick="setCategoryFilter('favoris', this)">
+                                <div class="folder-item-content"><i class="fa-solid fa-star" style="color:var(--warning-color);"></i> Favoris</div>
+                            </li>
                         </ul>
 
-                        <span class="form-label" style="margin-top:10px;">Dossiers</span>
-                        <ul class="folder-tree">
-                            <li class="folder-item" onclick="setCategoryFilter('Web', this)"><i class="fa-solid fa-folder"></i> Web & Outils</li>
-                            <li class="folder-item" onclick="setCategoryFilter('Documentation', this)"><i class="fa-solid fa-folder"></i> Documentation</li>
-                            <li class="folder-item" onclick="setCategoryFilter('Réseau', this)"><i class="fa-solid fa-folder"></i> Réseau & Projets</li>
-                            <li class="folder-item" onclick="setCategoryFilter('Personnel', this)"><i class="fa-solid fa-folder"></i> Personnel</li>
+                        <span class="form-label" style="margin-top:10px;">Mes Dossiers</span>
+                        <ul class="folder-tree" id="custom-folders-list">
+                            <!-- Les dossiers personnalisés s'afficheront ici -->
                         </ul>
                     </div>
 
@@ -698,6 +716,21 @@
         </main>
     </div>
 
+    <!-- MODAL AJOUT DOSSIER -->
+    <div class="modal-overlay" id="folder-modal">
+        <div class="modal-card">
+            <h3>Nouveau Dossier</h3>
+            <div class="form-group">
+                <label class="form-label">Nom du dossier</label>
+                <input type="text" id="folder-name" class="form-control" placeholder="Ex: Projet X, Jeux, Cours...">
+            </div>
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                <button class="btn btn-secondary" onclick="closeFolderModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="createFolder()">Créer le dossier</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL AJOUT RESSOURCE -->
     <div class="modal-overlay" id="add-modal">
         <div class="modal-card">
@@ -713,11 +746,19 @@
             <div class="form-group">
                 <label class="form-label">Dossier</label>
                 <select id="item-category" class="form-control">
-                    <option value="Web">Web & Outils</option>
-                    <option value="Documentation">Documentation</option>
-                    <option value="Réseau">Réseau & Projets</option>
-                    <option value="Personnel">Personnel</option>
+                    <!-- Rempli dynamiquement -->
                 </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Style d'icône</label>
+                <select id="item-icon-type" class="form-control" onchange="toggleIconInput(this.value)">
+                    <option value="favicon">Favicon automatique (du site)</option>
+                    <option value="emoji">Emoji personnalisé</option>
+                </select>
+            </div>
+            <div class="form-group" id="emoji-input-group" style="display:none;">
+                <label class="form-label">Emoji</label>
+                <input type="text" id="item-emoji" class="form-control" placeholder="Ex: 🚀, 💻, 📌...">
             </div>
             <div class="form-group">
                 <label class="form-label">Description</label>
@@ -733,9 +774,10 @@
     <script>
         let currentCategory = 'all';
         let state = {
+            folders: JSON.parse(localStorage.getItem('ska_folders')) || ['Web', 'Documentation', 'Réseau', 'Personnel'],
             resources: JSON.parse(localStorage.getItem('ska_resources')) || [
-                { id: 1, title: 'Google', url: 'https://google.com', category: 'Web', desc: 'Moteur de recherche', favorite: true },
-                { id: 2, title: 'Documentation MDN', url: 'https://developer.mozilla.org', category: 'Documentation', desc: 'Ressources Web', favorite: false }
+                { id: 1, title: 'Google', url: 'https://google.com', category: 'Web', iconType: 'favicon', emoji: '', desc: 'Moteur de recherche', favorite: true },
+                { id: 2, title: 'MDN Web Docs', url: 'https://developer.mozilla.org', category: 'Documentation', iconType: 'emoji', emoji: '📚', desc: 'Ressources Web', favorite: false }
             ]
         };
 
@@ -764,6 +806,51 @@
             document.body.classList.toggle('zen-mode');
         }
 
+        // GESTION DES DOSSIERS
+        function renderFolders() {
+            const list = document.getElementById('custom-folders-list');
+            const select = document.getElementById('item-category');
+
+            list.innerHTML = state.folders.map(f => `
+                <li class="folder-item ${currentCategory === f ? 'active' : ''}" onclick="setCategoryFilter('${f}', this)">
+                    <div class="folder-item-content"><i class="fa-solid fa-folder"></i> ${f}</div>
+                    <i class="fa-solid fa-xmark" onclick="deleteFolder(event, '${f}')" style="color:var(--text-muted); font-size:0.8rem; cursor:pointer;" title="Supprimer le dossier"></i>
+                </li>
+            `).join('');
+
+            select.innerHTML = state.folders.map(f => `<option value="${f}">${f}</option>`).join('');
+        }
+
+        function createFolder() {
+            const name = document.getElementById('folder-name').value.trim();
+            if (!name) return alert('Veuillez entrer un nom de dossier.');
+            if (state.folders.includes(name)) return alert('Ce dossier existe déjà.');
+
+            state.folders.push(name);
+            localStorage.setItem('ska_folders', JSON.stringify(state.folders));
+            renderFolders();
+            closeFolderModal();
+            document.getElementById('folder-name').value = '';
+        }
+
+        function deleteFolder(event, folderName) {
+            event.stopPropagation();
+            if (confirm(`Supprimer le dossier "${folderName}" ? Les fichiers qu'il contient repasseront en "Non classé".`)) {
+                state.folders = state.folders.filter(f => f !== folderName);
+                state.resources.forEach(r => {
+                    if (r.category === folderName) r.category = 'Non classé';
+                });
+                localStorage.setItem('ska_folders', JSON.stringify(state.folders));
+                localStorage.setItem('ska_resources', JSON.stringify(state.resources));
+                if (currentCategory === folderName) setCategoryFilter('all');
+                renderFolders();
+                renderExplorer();
+            }
+        }
+
+        function openFolderModal() { document.getElementById('folder-modal').classList.add('open'); }
+        function closeFolderModal() { document.getElementById('folder-modal').classList.remove('open'); }
+
         // EXPLORATEUR
         function setCategoryFilter(cat, element) {
             currentCategory = cat;
@@ -777,6 +864,24 @@
             const grid = document.getElementById('explorer-grid');
             if (mode === 'list') grid.classList.add('list-view');
             else grid.classList.remove('list-view');
+        }
+
+        function toggleIconInput(type) {
+            document.getElementById('emoji-input-group').style.display = (type === 'emoji') ? 'flex' : 'none';
+        }
+
+        function getIconHTML(resource) {
+            if (resource.iconType === 'emoji' && resource.emoji) {
+                return `<span>${resource.emoji}</span>`;
+            } else {
+                try {
+                    const urlObj = new URL(resource.url);
+                    const domain = urlObj.hostname;
+                    return `<img src="https://www.google.com/s2/favicons?domain=${domain}&sz=64" alt="favicon" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-globe\'></i>';">`;
+                } catch(e) {
+                    return `<i class="fa-solid fa-globe"></i>`;
+                }
+            }
         }
 
         function renderExplorer() {
@@ -796,7 +901,7 @@
 
             grid.innerHTML = filtered.map(r => `
                 <div class="file-card">
-                    <div class="file-icon"><i class="fa-solid fa-file"></i></div>
+                    <div class="file-icon">${getIconHTML(r)}</div>
                     <div class="file-info">
                         <div class="file-name">${r.title}</div>
                         <div class="file-meta">${r.category} - ${r.desc || 'Sans desc'}</div>
@@ -822,17 +927,37 @@
         }
 
         function saveItem() {
-            const title = document.getElementById('item-title').value;
-            const url = document.getElementById('item-url').value;
+            const title = document.getElementById('item-title').value.trim();
+            let url = document.getElementById('item-url').value.trim();
             const category = document.getElementById('item-category').value;
-            const desc = document.getElementById('item-desc').value;
+            const iconType = document.getElementById('item-icon-type').value;
+            const emoji = document.getElementById('item-emoji').value.trim();
+            const desc = document.getElementById('item-desc').value.trim();
 
             if(!title || !url) return alert('Titre et URL requis.');
+            if(!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
 
-            state.resources.push({ id: Date.now(), title, url, category, desc, favorite: false });
+            state.resources.push({
+                id: Date.now(),
+                title,
+                url,
+                category,
+                iconType,
+                emoji,
+                desc,
+                favorite: false
+            });
+
             localStorage.setItem('ska_resources', JSON.stringify(state.resources));
             renderExplorer();
             closeAddModal();
+
+            document.getElementById('item-title').value = '';
+            document.getElementById('item-url').value = '';
+            document.getElementById('item-emoji').value = '';
+            document.getElementById('item-desc').value = '';
         }
 
         function deleteResource(id) {
@@ -882,6 +1007,7 @@
 
         // INITIALISATION
         document.addEventListener('DOMContentLoaded', () => {
+            renderFolders();
             renderExplorer();
             generatePassword();
             document.getElementById('dash-quick-note').value = localStorage.getItem('ska_quicknote') || '';
