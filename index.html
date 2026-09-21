@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKA Tool V8.0 - Dynamic Workspace</title>
+    <title>SKA Tool V9.0 - Dynamic Workspace</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -493,7 +493,7 @@
         <div class="sidebar-header">
             <a href="#" class="brand">
                 <div class="brand-icon"><i class="fa-solid fa-layer-group"></i></div>
-                <span>SKA Tool <small style="font-size:0.6em; color:var(--accent-color);">V8.0</small></span>
+                <span>SKA Tool <small style="font-size:0.6em; color:var(--accent-color);">V9.0</small></span>
             </a>
         </div>
         <ul class="nav-menu">
@@ -536,7 +536,10 @@
                         <h1 class="page-title">Tableau de bord</h1>
                         <p class="page-subtitle">Accès rapide à l'ensemble de vos outils et fichiers enregistrés.</p>
                     </div>
-                    <button class="btn btn-primary" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Ajouter une ressource</button>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn btn-secondary" onclick="openFolderModal()"><i class="fa-solid fa-folder-plus"></i> Ajouter un Dossier</button>
+                        <button class="btn btn-primary" onclick="openAddFileModal()"><i class="fa-solid fa-file-circle-plus"></i> Ajouter un Fichier</button>
+                    </div>
                 </div>
 
                 <div class="grid-container">
@@ -567,8 +570,8 @@
                         <p class="page-subtitle">Gérez vos fichiers, raccourcis web et documentations par dossier.</p>
                     </div>
                     <div style="display:flex; gap:10px;">
-                        <button class="btn btn-secondary" onclick="openFolderModal()"><i class="fa-solid fa-folder-plus"></i> Nouveau Dossier</button>
-                        <button class="btn btn-primary" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Nouveau fichier/lien</button>
+                        <button class="btn btn-secondary" onclick="openFolderModal()"><i class="fa-solid fa-folder-plus"></i> Ajouter un Dossier</button>
+                        <button class="btn btn-primary" onclick="openAddFileModal()"><i class="fa-solid fa-file-circle-plus"></i> Ajouter un Fichier</button>
                     </div>
                 </div>
 
@@ -716,13 +719,17 @@
         </main>
     </div>
 
-    <!-- MODAL AJOUT DOSSIER -->
+    <!-- MODAL 1: AJOUTER UN DOSSIER -->
     <div class="modal-overlay" id="folder-modal">
         <div class="modal-card">
-            <h3>Nouveau Dossier</h3>
+            <h3><i class="fa-solid fa-folder-plus" style="color:var(--warning-color);"></i> Ajouter un nouveau dossier</h3>
             <div class="form-group">
                 <label class="form-label">Nom du dossier</label>
                 <input type="text" id="folder-name" class="form-control" placeholder="Ex: Projet X, Jeux, Cours...">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Emoji du dossier (optionnel)</label>
+                <input type="text" id="folder-emoji" class="form-control" placeholder="Ex: 📁, 🚀, 🎮, 📂...">
             </div>
             <div style="display:flex; gap:10px; justify-content:flex-end;">
                 <button class="btn btn-secondary" onclick="closeFolderModal()">Annuler</button>
@@ -731,42 +738,42 @@
         </div>
     </div>
 
-    <!-- MODAL AJOUT RESSOURCE -->
-    <div class="modal-overlay" id="add-modal">
+    <!-- MODAL 2: AJOUTER UN FICHIER -->
+    <div class="modal-overlay" id="file-modal">
         <div class="modal-card">
-            <h3>Ajouter un élément à l'explorateur</h3>
+            <h3><i class="fa-solid fa-file-circle-plus" style="color:var(--accent-color);"></i> Ajouter un fichier / lien</h3>
             <div class="form-group">
-                <label class="form-label">Titre</label>
-                <input type="text" id="item-title" class="form-control" placeholder="Titre...">
+                <label class="form-label">Titre du fichier</label>
+                <input type="text" id="item-title" class="form-control" placeholder="Ex: Google, Doc API...">
             </div>
             <div class="form-group">
                 <label class="form-label">Lien / URL</label>
                 <input type="url" id="item-url" class="form-control" placeholder="https://...">
             </div>
             <div class="form-group">
-                <label class="form-label">Dossier</label>
+                <label class="form-label">Dossier de destination</label>
                 <select id="item-category" class="form-control">
                     <!-- Rempli dynamiquement -->
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">Style d'icône</label>
+                <label class="form-label">Type d'icône pour le fichier</label>
                 <select id="item-icon-type" class="form-control" onchange="toggleIconInput(this.value)">
-                    <option value="favicon">Favicon automatique (du site)</option>
+                    <option value="favicon">Favicon (Logo automatique du site)</option>
                     <option value="emoji">Emoji personnalisé</option>
                 </select>
             </div>
             <div class="form-group" id="emoji-input-group" style="display:none;">
-                <label class="form-label">Emoji</label>
-                <input type="text" id="item-emoji" class="form-control" placeholder="Ex: 🚀, 💻, 📌...">
+                <label class="form-label">Emoji personnalisé</label>
+                <input type="text" id="item-emoji" class="form-control" placeholder="Ex: 📌, 📄, 🌐...">
             </div>
             <div class="form-group">
-                <label class="form-label">Description</label>
+                <label class="form-label">Description (optionnelle)</label>
                 <input type="text" id="item-desc" class="form-control" placeholder="Informations complémentaires...">
             </div>
             <div style="display:flex; gap:10px; justify-content:flex-end;">
-                <button class="btn btn-secondary" onclick="closeAddModal()">Annuler</button>
-                <button class="btn btn-primary" onclick="saveItem()">Enregistrer</button>
+                <button class="btn btn-secondary" onclick="closeAddFileModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveFileItem()">Enregistrer le fichier</button>
             </div>
         </div>
     </div>
@@ -774,7 +781,12 @@
     <script>
         let currentCategory = 'all';
         let state = {
-            folders: JSON.parse(localStorage.getItem('ska_folders')) || ['Web', 'Documentation', 'Réseau', 'Personnel'],
+            folders: JSON.parse(localStorage.getItem('ska_folders_v2')) || [
+                { name: 'Web', emoji: '🌐' },
+                { name: 'Documentation', emoji: '📚' },
+                { name: 'Réseau', emoji: '📡' },
+                { name: 'Personnel', emoji: '🔒' }
+            ],
             resources: JSON.parse(localStorage.getItem('ska_resources')) || [
                 { id: 1, title: 'Google', url: 'https://google.com', category: 'Web', iconType: 'favicon', emoji: '', desc: 'Moteur de recherche', favorite: true },
                 { id: 2, title: 'MDN Web Docs', url: 'https://developer.mozilla.org', category: 'Documentation', iconType: 'emoji', emoji: '📚', desc: 'Ressources Web', favorite: false }
@@ -806,41 +818,50 @@
             document.body.classList.toggle('zen-mode');
         }
 
-        // GESTION DES DOSSIERS
+        // --- GESTION SEPAREE DES DOSSIERS ---
         function renderFolders() {
             const list = document.getElementById('custom-folders-list');
             const select = document.getElementById('item-category');
 
             list.innerHTML = state.folders.map(f => `
-                <li class="folder-item ${currentCategory === f ? 'active' : ''}" onclick="setCategoryFilter('${f}', this)">
-                    <div class="folder-item-content"><i class="fa-solid fa-folder"></i> ${f}</div>
-                    <i class="fa-solid fa-xmark" onclick="deleteFolder(event, '${f}')" style="color:var(--text-muted); font-size:0.8rem; cursor:pointer;" title="Supprimer le dossier"></i>
+                <li class="folder-item ${currentCategory === f.name ? 'active' : ''}" onclick="setCategoryFilter('${f.name}', this)">
+                    <div class="folder-item-content">
+                        <span>${f.emoji || '📁'}</span> ${f.name}
+                    </div>
+                    <i class="fa-solid fa-xmark" onclick="deleteFolder(event, '${f.name}')" style="color:var(--text-muted); font-size:0.8rem; cursor:pointer;" title="Supprimer le dossier"></i>
                 </li>
             `).join('');
 
-            select.innerHTML = state.folders.map(f => `<option value="${f}">${f}</option>`).join('');
+            select.innerHTML = state.folders.map(f => `<option value="${f.name}">${f.emoji ? f.emoji + ' ' : ''}${f.name}</option>`).join('');
         }
+
+        function openFolderModal() { document.getElementById('folder-modal').classList.add('open'); }
+        function closeFolderModal() { document.getElementById('folder-modal').classList.remove('open'); }
 
         function createFolder() {
             const name = document.getElementById('folder-name').value.trim();
-            if (!name) return alert('Veuillez entrer un nom de dossier.');
-            if (state.folders.includes(name)) return alert('Ce dossier existe déjà.');
+            const emoji = document.getElementById('folder-emoji').value.trim();
 
-            state.folders.push(name);
-            localStorage.setItem('ska_folders', JSON.stringify(state.folders));
+            if (!name) return alert('Veuillez entrer un nom de dossier.');
+            if (state.folders.some(f => f.name === name)) return alert('Ce dossier existe déjà.');
+
+            state.folders.push({ name, emoji: emoji || '📁' });
+            localStorage.setItem('ska_folders_v2', JSON.stringify(state.folders));
             renderFolders();
             closeFolderModal();
+
             document.getElementById('folder-name').value = '';
+            document.getElementById('folder-emoji').value = '';
         }
 
         function deleteFolder(event, folderName) {
             event.stopPropagation();
-            if (confirm(`Supprimer le dossier "${folderName}" ? Les fichiers qu'il contient repasseront en "Non classé".`)) {
-                state.folders = state.folders.filter(f => f !== folderName);
+            if (confirm(`Supprimer le dossier "${folderName}" ?`)) {
+                state.folders = state.folders.filter(f => f.name !== folderName);
                 state.resources.forEach(r => {
                     if (r.category === folderName) r.category = 'Non classé';
                 });
-                localStorage.setItem('ska_folders', JSON.stringify(state.folders));
+                localStorage.setItem('ska_folders_v2', JSON.stringify(state.folders));
                 localStorage.setItem('ska_resources', JSON.stringify(state.resources));
                 if (currentCategory === folderName) setCategoryFilter('all');
                 renderFolders();
@@ -848,8 +869,47 @@
             }
         }
 
-        function openFolderModal() { document.getElementById('folder-modal').classList.add('open'); }
-        function closeFolderModal() { document.getElementById('folder-modal').classList.remove('open'); }
+        // --- GESTION SEPAREE DES FICHIERS ---
+        function openAddFileModal() { document.getElementById('file-modal').classList.add('open'); }
+        function closeAddFileModal() { document.getElementById('file-modal').classList.remove('open'); }
+
+        function toggleIconInput(type) {
+            document.getElementById('emoji-input-group').style.display = (type === 'emoji') ? 'flex' : 'none';
+        }
+
+        function saveFileItem() {
+            const title = document.getElementById('item-title').value.trim();
+            let url = document.getElementById('item-url').value.trim();
+            const category = document.getElementById('item-category').value;
+            const iconType = document.getElementById('item-icon-type').value;
+            const emoji = document.getElementById('item-emoji').value.trim();
+            const desc = document.getElementById('item-desc').value.trim();
+
+            if(!title || !url) return alert('Titre et URL requis.');
+            if(!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+
+            state.resources.push({
+                id: Date.now(),
+                title,
+                url,
+                category,
+                iconType,
+                emoji,
+                desc,
+                favorite: false
+            });
+
+            localStorage.setItem('ska_resources', JSON.stringify(state.resources));
+            renderExplorer();
+            closeAddFileModal();
+
+            document.getElementById('item-title').value = '';
+            document.getElementById('item-url').value = '';
+            document.getElementById('item-emoji').value = '';
+            document.getElementById('item-desc').value = '';
+        }
 
         // EXPLORATEUR
         function setCategoryFilter(cat, element) {
@@ -864,10 +924,6 @@
             const grid = document.getElementById('explorer-grid');
             if (mode === 'list') grid.classList.add('list-view');
             else grid.classList.remove('list-view');
-        }
-
-        function toggleIconInput(type) {
-            document.getElementById('emoji-input-group').style.display = (type === 'emoji') ? 'flex' : 'none';
         }
 
         function getIconHTML(resource) {
@@ -926,48 +982,11 @@
             }
         }
 
-        function saveItem() {
-            const title = document.getElementById('item-title').value.trim();
-            let url = document.getElementById('item-url').value.trim();
-            const category = document.getElementById('item-category').value;
-            const iconType = document.getElementById('item-icon-type').value;
-            const emoji = document.getElementById('item-emoji').value.trim();
-            const desc = document.getElementById('item-desc').value.trim();
-
-            if(!title || !url) return alert('Titre et URL requis.');
-            if(!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
-            }
-
-            state.resources.push({
-                id: Date.now(),
-                title,
-                url,
-                category,
-                iconType,
-                emoji,
-                desc,
-                favorite: false
-            });
-
-            localStorage.setItem('ska_resources', JSON.stringify(state.resources));
-            renderExplorer();
-            closeAddModal();
-
-            document.getElementById('item-title').value = '';
-            document.getElementById('item-url').value = '';
-            document.getElementById('item-emoji').value = '';
-            document.getElementById('item-desc').value = '';
-        }
-
         function deleteResource(id) {
             state.resources = state.resources.filter(r => r.id !== id);
             localStorage.setItem('ska_resources', JSON.stringify(state.resources));
             renderExplorer();
         }
-
-        function openAddModal() { document.getElementById('add-modal').classList.add('open'); }
-        function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
 
         // OUTILS SECONDAIRES
         function saveNotes() {
