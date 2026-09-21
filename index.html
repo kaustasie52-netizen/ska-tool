@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKA Tool V9.0 - Dynamic Workspace</title>
+    <title>SKA Tool V10.0 - Dynamic Workspace</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -257,7 +257,7 @@
         .page-title { font-size: 1.5rem; font-weight: 700; }
         .page-subtitle { font-size: 0.875rem; color: var(--text-muted); margin-top: 4px; }
 
-        /* EXPLORATEUR DE FICHIERS DÉVELOPPÉ */
+        /* EXPLORATEUR DE FICHIERS */
         .explorer-container {
             display: grid;
             grid-template-columns: 260px 1fr;
@@ -305,7 +305,6 @@
         }
 
         .folder-item.active { color: var(--accent-color); font-weight: 600; }
-        .folder-item i { color: var(--warning-color); }
 
         .explorer-main {
             padding: 24px;
@@ -432,7 +431,7 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
             padding: 12px;
-            font-family: monospace;
+            font-family: inherit;
             font-size: 0.9rem;
             color: var(--text-main);
             min-height: 44px;
@@ -459,6 +458,41 @@
             width: 100%; max-width: 500px;
             padding: 24px;
             display: flex; flex-direction: column; gap: 16px;
+        }
+
+        /* CHAT IA EXERCICES */
+        .chat-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 320px;
+            overflow-y: auto;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+        }
+
+        .chat-msg {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+
+        .chat-msg.user {
+            align-self: flex-end;
+            background-color: var(--accent-color);
+            color: #fff;
+        }
+
+        .chat-msg.ai {
+            align-self: flex-start;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
         }
 
         /* CALCULATRICE */
@@ -493,7 +527,7 @@
         <div class="sidebar-header">
             <a href="#" class="brand">
                 <div class="brand-icon"><i class="fa-solid fa-layer-group"></i></div>
-                <span>SKA Tool <small style="font-size:0.6em; color:var(--accent-color);">V9.0</small></span>
+                <span>SKA Tool <small style="font-size:0.6em; color:var(--accent-color);">V10.0</small></span>
             </a>
         </div>
         <ul class="nav-menu">
@@ -503,6 +537,7 @@
 
             <li class="nav-section-title">Outils Quotidiens</li>
             <li><a class="nav-item" onclick="switchView('notes')" id="nav-notes"><i class="fa-solid fa-note-sticky"></i> Prise de Notes</a></li>
+            <li><a class="nav-item" onclick="switchView('ia-homework')" id="nav-ia-homework"><i class="fa-solid fa-wand-magic-sparkles" style="color: #a855f7;"></i> IA Devoirs (Gemini)</a></li>
             <li><a class="nav-item" onclick="switchView('calculator')" id="nav-calculator"><i class="fa-solid fa-calculator"></i> Calculatrice</a></li>
             <li><a class="nav-item" onclick="switchView('converter')" id="nav-converter"><i class="fa-solid fa-arrow-right-arrow-left"></i> Convertisseur Unités</a></li>
 
@@ -534,7 +569,7 @@
                 <div class="page-header">
                     <div>
                         <h1 class="page-title">Tableau de bord</h1>
-                        <p class="page-subtitle">Accès rapide à l'ensemble de vos outils et fichiers enregistrés.</p>
+                        <p class="page-subtitle">Accès rapide à l'ensemble de vos outils, devoirs et fichiers enregistrés.</p>
                     </div>
                     <div style="display:flex; gap:10px;">
                         <button class="btn btn-secondary" onclick="openFolderModal()"><i class="fa-solid fa-folder-plus"></i> Ajouter un Dossier</button>
@@ -544,7 +579,7 @@
 
                 <div class="grid-container">
                     <div class="card">
-                        <div class="card-title"><i class="fa-solid fa-folder"></i> Total Ressources</div>
+                        <div class="card-title"><i class="fa-solid fa-folder"></i> Total Ressources & Notes</div>
                         <h2 style="font-size:2rem;" id="stat-resources-count">0</h2>
                         <p style="font-size:0.85rem; color:var(--text-muted);">Gérées dans l'explorateur</p>
                     </div>
@@ -562,12 +597,12 @@
                 </div>
             </section>
 
-            <!-- VUE 2: EXPLORATEUR DE FICHIERS COMPLET -->
+            <!-- VUE 2: EXPLORATEUR DE FICHIERS -->
             <section id="view-explorer" class="view-section">
                 <div class="page-header">
                     <div>
                         <h1 class="page-title">Explorateur Avancé</h1>
-                        <p class="page-subtitle">Gérez vos fichiers, raccourcis web et documentations par dossier.</p>
+                        <p class="page-subtitle">Gérez vos fichiers, notes sauvegardées et liens web par dossier.</p>
                     </div>
                     <div style="display:flex; gap:10px;">
                         <button class="btn btn-secondary" onclick="openFolderModal()"><i class="fa-solid fa-folder-plus"></i> Ajouter un Dossier</button>
@@ -588,9 +623,7 @@
                         </ul>
 
                         <span class="form-label" style="margin-top:10px;">Mes Dossiers</span>
-                        <ul class="folder-tree" id="custom-folders-list">
-                            <!-- Les dossiers personnalisés s'afficheront ici -->
-                        </ul>
+                        <ul class="folder-tree" id="custom-folders-list"></ul>
                     </div>
 
                     <div class="explorer-main">
@@ -607,21 +640,65 @@
                 </div>
             </section>
 
-            <!-- VUE 3: PRISE DE NOTES -->
+            <!-- VUE 3: PRISE DE NOTES DANS UN DOSSIER -->
             <section id="view-notes" class="view-section">
                 <div class="page-header">
                     <div>
-                        <h1 class="page-title">Bloc-Notes</h1>
-                        <p class="page-subtitle">Rédigez et sauvegardez automatiquement vos textes.</p>
+                        <h1 class="page-title">Bloc-Notes & Documents</h1>
+                        <p class="page-subtitle">Rédigez vos notes et enregistrez-les directement sous forme de fichier dans un dossier.</p>
                     </div>
                 </div>
                 <div class="card">
-                    <input type="text" id="note-title" class="form-control" placeholder="Titre de la note..." style="font-weight:600;" oninput="saveNotes()">
-                    <textarea id="note-body" class="form-control" rows="12" placeholder="Écrivez votre texte ici..." oninput="saveNotes()"></textarea>
+                    <div style="display:grid; grid-template-columns: 2fr 1fr; gap:12px;">
+                        <div class="form-group">
+                            <label class="form-label">Titre du document</label>
+                            <input type="text" id="note-title" class="form-control" placeholder="Titre de la note...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Dossier de destination</label>
+                            <select id="note-folder-select" class="form-control"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Contenu de la note</label>
+                        <textarea id="note-body" class="form-control" rows="10" placeholder="Écrivez votre texte ici..."></textarea>
+                    </div>
+
+                    <div style="display:flex; justify-content:flex-end; gap:10px;">
+                        <button class="btn btn-primary" onclick="saveNoteToFolder()"><i class="fa-solid fa-floppy-disk"></i> Enregistrer dans le dossier</button>
+                    </div>
                 </div>
             </section>
 
-            <!-- VUE 4: CALCULATRICE -->
+            <!-- VUE 4: ASSISTANT IA EXERCICES (GEMINI) -->
+            <section id="view-ia-homework" class="view-section">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title"><i class="fa-solid fa-wand-magic-sparkles" style="color:#a855f7;"></i> Assistant IA Devoirs & Exercices</h1>
+                        <p class="page-subtitle">Résolvez vos exercices et demandez des explications étape par étape grâce à Gemini.</p>
+                    </div>
+                </div>
+
+                <div class="card" style="gap:16px;">
+                    <div class="form-group">
+                        <label class="form-label">Clé API Google Gemini (Requise une fois)</label>
+                        <input type="password" id="gemini-api-key" class="form-control" placeholder="AIzaSy..." onchange="localStorage.setItem('ska_gemini_key', this.value)">
+                        <small style="color:var(--text-muted); font-size:0.75rem;">Votre clé est conservée uniquement dans votre navigateur.</small>
+                    </div>
+
+                    <div class="chat-box" id="ia-chat-box">
+                        <div class="chat-msg ai">Bonjour ! Posez-moi une question sur vos devoirs, un problème de mathématiques ou un exercice. Je suis là pour vous expliquer !</div>
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <textarea id="ia-input" class="form-control" rows="2" placeholder="Collez votre sujet d'exercice ici..."></textarea>
+                        <button class="btn btn-primary" onclick="askGemini()"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VUE 5: CALCULATRICE -->
             <section id="view-calculator" class="view-section">
                 <div class="page-header">
                     <div>
@@ -655,7 +732,7 @@
                 </div>
             </section>
 
-            <!-- VUE 5: CONVERTISSEUR -->
+            <!-- VUE 6: CONVERTISSEUR -->
             <section id="view-converter" class="view-section">
                 <div class="page-header">
                     <div>
@@ -677,7 +754,7 @@
                 </div>
             </section>
 
-            <!-- VUE 6: MOT DE PASSE -->
+            <!-- VUE 7: MOT DE PASSE -->
             <section id="view-generator" class="view-section">
                 <div class="page-header">
                     <div>
@@ -697,7 +774,7 @@
                 </div>
             </section>
 
-            <!-- VUE 7: ANALYSEUR IP -->
+            <!-- VUE 8: ANALYSEUR IP -->
             <section id="view-ip-analyzer" class="view-section">
                 <div class="page-header">
                     <div>
@@ -725,11 +802,11 @@
             <h3><i class="fa-solid fa-folder-plus" style="color:var(--warning-color);"></i> Ajouter un nouveau dossier</h3>
             <div class="form-group">
                 <label class="form-label">Nom du dossier</label>
-                <input type="text" id="folder-name" class="form-control" placeholder="Ex: Projet X, Jeux, Cours...">
+                <input type="text" id="folder-name" class="form-control" placeholder="Ex: Mathématiques, Histoire, Projet X...">
             </div>
             <div class="form-group">
                 <label class="form-label">Emoji du dossier (optionnel)</label>
-                <input type="text" id="folder-emoji" class="form-control" placeholder="Ex: 📁, 🚀, 🎮, 📂...">
+                <input type="text" id="folder-emoji" class="form-control" placeholder="Ex: 📐, 📖, 📁...">
             </div>
             <div style="display:flex; gap:10px; justify-content:flex-end;">
                 <button class="btn btn-secondary" onclick="closeFolderModal()">Annuler</button>
@@ -752,9 +829,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Dossier de destination</label>
-                <select id="item-category" class="form-control">
-                    <!-- Rempli dynamiquement -->
-                </select>
+                <select id="item-category" class="form-control"></select>
             </div>
             <div class="form-group">
                 <label class="form-label">Type d'icône pour le fichier</label>
@@ -782,14 +857,12 @@
         let currentCategory = 'all';
         let state = {
             folders: JSON.parse(localStorage.getItem('ska_folders_v2')) || [
+                { name: 'Devoirs', emoji: '📚' },
                 { name: 'Web', emoji: '🌐' },
-                { name: 'Documentation', emoji: '📚' },
-                { name: 'Réseau', emoji: '📡' },
                 { name: 'Personnel', emoji: '🔒' }
             ],
             resources: JSON.parse(localStorage.getItem('ska_resources')) || [
-                { id: 1, title: 'Google', url: 'https://google.com', category: 'Web', iconType: 'favicon', emoji: '', desc: 'Moteur de recherche', favorite: true },
-                { id: 2, title: 'MDN Web Docs', url: 'https://developer.mozilla.org', category: 'Documentation', iconType: 'emoji', emoji: '📚', desc: 'Ressources Web', favorite: false }
+                { id: 1, title: 'Google', url: 'https://google.com', category: 'Web', iconType: 'favicon', emoji: '', desc: 'Moteur de recherche', favorite: true, type: 'link' }
             ]
         };
 
@@ -810,18 +883,14 @@
             document.querySelector('#live-clock span').textContent = new Date().toLocaleTimeString('fr-FR');
         }, 1000);
 
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-        }
+        function toggleTheme() { document.body.classList.toggle('light-mode'); }
+        function toggleZenMode() { document.body.classList.toggle('zen-mode'); }
 
-        function toggleZenMode() {
-            document.body.classList.toggle('zen-mode');
-        }
-
-        // --- GESTION SEPAREE DES DOSSIERS ---
+        // DOSSIERS
         function renderFolders() {
             const list = document.getElementById('custom-folders-list');
-            const select = document.getElementById('item-category');
+            const selectFile = document.getElementById('item-category');
+            const selectNote = document.getElementById('note-folder-select');
 
             list.innerHTML = state.folders.map(f => `
                 <li class="folder-item ${currentCategory === f.name ? 'active' : ''}" onclick="setCategoryFilter('${f.name}', this)">
@@ -832,7 +901,9 @@
                 </li>
             `).join('');
 
-            select.innerHTML = state.folders.map(f => `<option value="${f.name}">${f.emoji ? f.emoji + ' ' : ''}${f.name}</option>`).join('');
+            const optionsHTML = state.folders.map(f => `<option value="${f.name}">${f.emoji ? f.emoji + ' ' : ''}${f.name}</option>`).join('');
+            selectFile.innerHTML = optionsHTML;
+            selectNote.innerHTML = optionsHTML;
         }
 
         function openFolderModal() { document.getElementById('folder-modal').classList.add('open'); }
@@ -869,7 +940,40 @@
             }
         }
 
-        // --- GESTION SEPAREE DES FICHIERS ---
+        // ENREGISTRER UNE NOTE DANS UN DOSSIER
+        function saveNoteToFolder() {
+            const title = document.getElementById('note-title').value.trim();
+            const content = document.getElementById('note-body').value.trim();
+            const folder = document.getElementById('note-folder-select').value;
+
+            if (!title || !content) return alert('Veuillez remplir le titre et le contenu.');
+
+            // Création d'un fichier texte sous forme de Data URL
+            const blob = new Blob([content], { type: 'text/plain' });
+            const fileUrl = URL.createObjectURL(blob);
+
+            state.resources.push({
+                id: Date.now(),
+                title: title + '.txt',
+                url: fileUrl,
+                category: folder,
+                iconType: 'emoji',
+                emoji: '📝',
+                desc: content.substring(0, 40) + '...',
+                content: content,
+                type: 'note',
+                favorite: false
+            });
+
+            localStorage.setItem('ska_resources', JSON.stringify(state.resources));
+            alert(`Note enregistrée avec succès dans le dossier "${folder}" !`);
+            document.getElementById('note-title').value = '';
+            document.getElementById('note-body').value = '';
+            renderExplorer();
+            switchView('explorer');
+        }
+
+        // FICHIERS
         function openAddFileModal() { document.getElementById('file-modal').classList.add('open'); }
         function closeAddFileModal() { document.getElementById('file-modal').classList.remove('open'); }
 
@@ -886,19 +990,12 @@
             const desc = document.getElementById('item-desc').value.trim();
 
             if(!title || !url) return alert('Titre et URL requis.');
-            if(!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
-            }
+            if(!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
 
             state.resources.push({
                 id: Date.now(),
-                title,
-                url,
-                category,
-                iconType,
-                emoji,
-                desc,
-                favorite: false
+                title, url, category, iconType, emoji, desc,
+                type: 'link', favorite: false
             });
 
             localStorage.setItem('ska_resources', JSON.stringify(state.resources));
@@ -932,10 +1029,9 @@
             } else {
                 try {
                     const urlObj = new URL(resource.url);
-                    const domain = urlObj.hostname;
-                    return `<img src="https://www.google.com/s2/favicons?domain=${domain}&sz=64" alt="favicon" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-globe\'></i>';">`;
+                    return `<img src="https://www.google.com/s2/favicons?domain=${urlObj.hostname}&sz=64" alt="favicon" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\'fa-solid fa-file\'></i>';">`;
                 } catch(e) {
-                    return `<i class="fa-solid fa-globe"></i>`;
+                    return `<i class="fa-solid fa-file"></i>`;
                 }
             }
         }
@@ -960,17 +1056,27 @@
                     <div class="file-icon">${getIconHTML(r)}</div>
                     <div class="file-info">
                         <div class="file-name">${r.title}</div>
-                        <div class="file-meta">${r.category} - ${r.desc || 'Sans desc'}</div>
+                        <div class="file-meta">${r.category} - ${r.desc || 'Document'}</div>
                     </div>
                     <div class="file-actions">
                         <button class="btn-icon" style="width:30px;height:30px;" onclick="toggleFavorite(${r.id})">
                             <i class="${r.favorite ? 'fa-solid' : 'fa-regular'} fa-star" style="color:${r.favorite ? 'var(--warning-color)' : ''}"></i>
                         </button>
-                        <a href="${r.url}" target="_blank" class="btn-icon" style="width:30px;height:30px;"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        ${r.type === 'note' ? 
+                            `<button class="btn-icon" style="width:30px;height:30px;" title="Lire / Télécharger" onclick="viewNote(${r.id})"><i class="fa-solid fa-eye"></i></button>` :
+                            `<a href="${r.url}" target="_blank" class="btn-icon" style="width:30px;height:30px;"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>`
+                        }
                         <button class="btn-icon" style="width:30px;height:30px;" onclick="deleteResource(${r.id})"><i class="fa-solid fa-trash" style="color:var(--danger-color)"></i></button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function viewNote(id) {
+            const note = state.resources.find(r => r.id === id);
+            if(note && note.content) {
+                alert(`--- ${note.title} ---\n\n${note.content}`);
+            }
         }
 
         function toggleFavorite(id) {
@@ -988,12 +1094,46 @@
             renderExplorer();
         }
 
-        // OUTILS SECONDAIRES
-        function saveNotes() {
-            localStorage.setItem('ska_note_title', document.getElementById('note-title').value);
-            localStorage.setItem('ska_note_body', document.getElementById('note-body').value);
+        // IA GEMINI POUR EXERCICES
+        async function askGemini() {
+            const key = document.getElementById('gemini-api-key').value.trim() || localStorage.getItem('ska_gemini_key');
+            const prompt = document.getElementById('ia-input').value.trim();
+            const chatBox = document.getElementById('ia-chat-box');
+
+            if(!key) return alert('Veuillez renseigner votre clé API Gemini.');
+            if(!prompt) return;
+
+            // Message utilisateur
+            chatBox.innerHTML += `<div class="chat-msg user">${prompt}</div>`;
+            document.getElementById('ia-input').value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Message de chargement
+            const loadingId = 'loading-' + Date.now();
+            chatBox.innerHTML += `<div class="chat-msg ai" id="${loadingId}">Réflexion en cours...</div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${key}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: "Tu es un professeur aidant un élève à résoudre ses devoirs. Explique clairement, étape par étape, la résolution de cet exercice :\n" + prompt }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                const aiText = data.candidates[0].content.parts[0].text;
+                document.getElementById(loadingId).innerText = aiText;
+            } catch (err) {
+                document.getElementById(loadingId).innerText = "Erreur lors de la réponse. Vérifiez votre clé API ou votre connexion.";
+            }
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
 
+        // OUTILS SECONDAIRES
         function calcAppend(val) { document.getElementById('calc-display').value += val; }
         function calcClear() { document.getElementById('calc-display').value = ''; }
         function calcCompute() {
@@ -1030,8 +1170,7 @@
             renderExplorer();
             generatePassword();
             document.getElementById('dash-quick-note').value = localStorage.getItem('ska_quicknote') || '';
-            document.getElementById('note-title').value = localStorage.getItem('ska_note_title') || '';
-            document.getElementById('note-body').value = localStorage.getItem('ska_note_body') || '';
+            document.getElementById('gemini-api-key').value = localStorage.getItem('ska_gemini_key') || '';
         });
     </script>
 </body>
