@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKA Tool V6.2 - Professional Workspace</title>
-    <!-- Police Inter & Icons FontAwesome -->
+    <title>SKA Tool V7.0 - Workspace Complet</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -12,7 +11,6 @@
 
     <style>
         :root {
-            /* Palette Dark Mode (Par défaut) */
             --bg-primary: #0f172a;
             --bg-secondary: #1e293b;
             --bg-card: rgba(30, 41, 59, 0.7);
@@ -72,7 +70,7 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* --- SIDEBAR --- */
+        /* SIDEBAR */
         .sidebar {
             width: var(--sidebar-width);
             background-color: var(--bg-secondary);
@@ -80,9 +78,7 @@
             display: flex;
             flex-direction: column;
             position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
+            top: 0; bottom: 0; left: 0;
             z-index: 100;
             transition: var(--transition);
         }
@@ -91,7 +87,6 @@
             height: var(--header-height);
             display: flex;
             align-items: center;
-            justify-content: space-between;
             padding: 0 20px;
             border-bottom: 1px solid var(--border-color);
         }
@@ -107,15 +102,11 @@
         }
 
         .brand-icon {
-            width: 36px;
-            height: 36px;
+            width: 36px; height: 36px;
             background: linear-gradient(135deg, var(--accent-color), #8b5cf6);
             border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             color: #fff;
-            font-size: 1.1rem;
             box-shadow: 0 4px 12px var(--accent-glow);
         }
 
@@ -124,7 +115,7 @@
             padding: 20px 12px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
             flex: 1;
             overflow-y: auto;
         }
@@ -134,7 +125,7 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             color: var(--text-muted);
-            margin: 12px 10px 6px;
+            margin: 14px 10px 6px;
             font-weight: 600;
         }
 
@@ -142,11 +133,11 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 14px;
+            padding: 10px 14px;
             color: var(--text-muted);
             text-decoration: none;
             border-radius: var(--radius-md);
-            font-size: 0.9rem;
+            font-size: 0.875rem;
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
@@ -163,12 +154,12 @@
         }
 
         .nav-item i {
-            font-size: 1.1rem;
+            font-size: 1rem;
             width: 20px;
             text-align: center;
         }
 
-        /* --- MAIN WRAPPER --- */
+        /* MAIN WRAPPER */
         .main-wrapper {
             margin-left: var(--sidebar-width);
             flex: 1;
@@ -178,7 +169,7 @@
             transition: var(--transition);
         }
 
-        /* --- HEADER --- */
+        /* HEADER */
         .header {
             height: var(--header-height);
             background-color: var(--bg-secondary);
@@ -190,7 +181,6 @@
             position: sticky;
             top: 0;
             z-index: 90;
-            backdrop-filter: blur(10px);
         }
 
         .header-search {
@@ -207,39 +197,28 @@
             color: var(--text-main);
             font-size: 0.875rem;
             outline: none;
-            transition: var(--transition);
-        }
-
-        .header-search input:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
         .header-search i {
             position: absolute;
-            left: 14px;
-            top: 50%;
+            left: 14px; top: 50%;
             transform: translateY(-50%);
             color: var(--text-muted);
-            font-size: 0.9rem;
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
         .btn-icon {
-            width: 40px;
-            height: 40px;
+            width: 38px; height: 38px;
             border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
             background-color: var(--bg-primary);
             color: var(--text-main);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             cursor: pointer;
             transition: var(--transition);
         }
@@ -250,37 +229,21 @@
         }
 
         .live-clock {
-            font-size: 0.875rem;
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--text-muted);
             background: var(--bg-primary);
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: var(--radius-md);
             border: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            display: flex; align-items: center; gap: 8px;
         }
 
-        /* --- CONTENT AREA --- */
-        .content {
-            padding: 30px;
-            flex: 1;
-        }
+        /* CONTENT */
+        .content { padding: 30px; flex: 1; }
 
-        .view-section {
-            display: none;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-
-        .view-section.active-view {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .view-section { display: none; }
+        .view-section.active-view { display: block; }
 
         .page-header {
             margin-bottom: 24px;
@@ -291,32 +254,23 @@
             gap: 16px;
         }
 
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
+        .page-title { font-size: 1.5rem; font-weight: 700; }
+        .page-subtitle { font-size: 0.875rem; color: var(--text-muted); margin-top: 4px; }
 
-        .page-subtitle {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        /* --- EXPLORATEUR DE FICHIERS AVANCÉ --- */
-        .explorer-layout {
+        /* EXPLORATEUR DE FICHIERS DÉVELOPPÉ */
+        .explorer-container {
             display: grid;
-            grid-template-columns: 240px 1fr;
+            grid-template-columns: 260px 1fr;
             gap: 20px;
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            min-height: 600px;
+            min-height: 650px;
             overflow: hidden;
         }
 
         .explorer-sidebar {
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: rgba(0, 0, 0, 0.15);
             border-right: 1px solid var(--border-color);
             padding: 20px 14px;
             display: flex;
@@ -324,12 +278,7 @@
             gap: 16px;
         }
 
-        .folder-tree {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+        .folder-tree { list-style: none; display: flex; flex-direction: column; gap: 4px; }
 
         .folder-item {
             display: flex;
@@ -349,17 +298,11 @@
             color: var(--text-main);
         }
 
-        .folder-item.active {
-            color: var(--accent-color);
-            font-weight: 600;
-        }
-
-        .folder-item i {
-            color: var(--warning-color);
-        }
+        .folder-item.active { color: var(--accent-color); font-weight: 600; }
+        .folder-item i { color: var(--warning-color); }
 
         .explorer-main {
-            padding: 20px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -375,35 +318,13 @@
             gap: 12px;
         }
 
-        .explorer-breadcrumbs {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .explorer-breadcrumbs span {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        .view-options {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
         .explorer-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
             gap: 16px;
         }
 
-        .explorer-grid.list-view {
-            grid-template-columns: 1fr;
-        }
+        .explorer-grid.list-view { grid-template-columns: 1fr; }
 
         .file-card {
             background-color: var(--bg-primary);
@@ -413,14 +334,10 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            position: relative;
             transition: var(--transition);
         }
 
-        .file-card:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
+        .file-card:hover { border-color: var(--accent-color); transform: translateY(-2px); }
 
         .list-view .file-card {
             flex-direction: row;
@@ -429,51 +346,25 @@
         }
 
         .file-icon {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: var(--accent-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             height: 60px;
             background-color: rgba(255, 255, 255, 0.02);
             border-radius: var(--radius-md);
         }
 
-        .list-view .file-icon {
-            height: auto;
-            font-size: 1.2rem;
-            background: none;
-        }
+        .list-view .file-icon { height: auto; font-size: 1.2rem; background: none; }
 
-        .file-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex: 1;
-        }
+        .file-info { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+        .file-name { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+        .file-meta { font-size: 0.75rem; color: var(--text-muted); }
+        .file-actions { display: flex; gap: 6px; }
 
-        .file-name {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-main);
-            word-break: break-word;
-        }
-
-        .file-meta {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .file-actions {
-            display: flex;
-            gap: 6px;
-            justify-content: flex-end;
-        }
-
-        /* --- CARDS & GRID --- */
+        /* CARDS & OUTILS */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
         }
 
@@ -482,44 +373,17 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             padding: 24px;
-            backdrop-filter: blur(8px);
-            transition: var(--transition);
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+        .card-title { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .card-title i { color: var(--accent-color); }
 
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .card-title i {
-            color: var(--accent-color);
-        }
-
-        /* --- FORM CONTROLS & BUTTONS --- */
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .form-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-        }
+        /* FORMS & BUTTONS */
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
 
         .form-control {
             width: 100%;
@@ -530,13 +394,9 @@
             color: var(--text-main);
             font-size: 0.9rem;
             outline: none;
-            transition: var(--transition);
         }
 
-        .form-control:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
+        .form-control:focus { border-color: var(--accent-color); }
 
         .btn {
             padding: 10px 18px;
@@ -545,386 +405,292 @@
             font-weight: 600;
             cursor: pointer;
             border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
             transition: var(--transition);
-            text-decoration: none;
         }
 
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: #ffffff;
-        }
+        .btn-primary { background-color: var(--accent-color); color: #fff; }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+        .btn-secondary { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-main); }
 
-        .btn-primary:hover {
-            background-color: var(--accent-hover);
-            box-shadow: 0 4px 12px var(--accent-glow);
-        }
-
-        .btn-secondary {
-            background-color: transparent;
+        .result-box {
+            background-color: var(--bg-primary);
             border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            font-family: monospace;
+            font-size: 0.9rem;
             color: var(--text-main);
+            min-height: 44px;
+            display: flex; align-items: center;
         }
 
-        .btn-secondary:hover {
-            background-color: var(--border-color);
-        }
-
-        /* --- MODAL --- */
+        /* MODAL */
         .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.6);
+            position: fixed; inset: 0;
+            background-color: rgba(0,0,0,0.6);
             backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
+            opacity: 0; pointer-events: none;
             transition: var(--transition);
         }
 
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
 
         .modal-card {
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            width: 100%;
-            max-width: 500px;
-            padding: 28px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-            transform: scale(0.95);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            width: 100%; max-width: 500px;
+            padding: 24px;
+            display: flex; flex-direction: column; gap: 16px;
         }
 
-        .modal-overlay.open .modal-card {
-            transform: scale(1);
+        /* CALCULATRICE */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
         }
 
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .modal-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-        }
-
-        .btn-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        .btn-close:hover {
-            color: var(--text-main);
-        }
-
-        /* --- OUTPUT / RESULT BOXES --- */
-        .result-box {
+        .calc-btn {
+            padding: 14px;
             background-color: var(--bg-primary);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 14px;
-            font-family: monospace;
-            font-size: 0.9rem;
             color: var(--text-main);
-            word-break: break-all;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Checkbox custom */
-        .checkbox-group {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin: 10px 0;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
+            font-weight: 600;
             cursor: pointer;
-            color: var(--text-muted);
         }
 
-        .checkbox-label input {
-            accent-color: var(--accent-color);
-            width: 16px;
-            height: 16px;
-        }
+        .calc-btn:hover { border-color: var(--accent-color); }
 
-        /* Responsive */
         @media (max-width: 900px) {
-            .explorer-layout {
-                grid-template-columns: 1fr;
-            }
-            .explorer-sidebar {
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .main-wrapper {
-                margin-left: 0;
-            }
-            .header-search {
-                width: 180px;
-            }
+            .explorer-container { grid-template-columns: 1fr; }
+            .explorer-sidebar { border-right: none; border-bottom: 1px solid var(--border-color); }
         }
     </style>
 </head>
 <body>
 
     <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
+    <aside class="sidebar">
         <div class="sidebar-header">
             <a href="#" class="brand">
-                <div class="brand-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                <span>SKA Tool <small style="font-size: 0.6em; color: var(--accent-color);">V6.2</small></span>
+                <div class="brand-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <span>SKA Tool <small style="font-size:0.6em; color:var(--accent-color);">V7.0</small></span>
             </a>
         </div>
         <ul class="nav-menu">
             <li class="nav-section-title">Général</li>
-            <li>
-                <a class="nav-item active" onclick="switchView('dashboard')" id="nav-dashboard">
-                    <i class="fa-solid fa-chart-pie"></i> Tableau de bord
-                </a>
-            </li>
-            <li>
-                <a class="nav-item" onclick="switchView('explorer')" id="nav-explorer">
-                    <i class="fa-solid fa-folder-open"></i> Explorateur
-                </a>
-            </li>
+            <li><a class="nav-item active" onclick="switchView('dashboard')" id="nav-dashboard"><i class="fa-solid fa-chart-pie"></i> Tableau de bord</a></li>
+            <li><a class="nav-item" onclick="switchView('explorer')" id="nav-explorer"><i class="fa-solid fa-folder-open"></i> Explorateur</a></li>
 
-            <li class="nav-section-title">Outillage</li>
-            <li>
-                <a class="nav-item" onclick="switchView('generator')" id="nav-generator">
-                    <i class="fa-solid fa-key"></i> Mot de Passe
-                </a>
-            </li>
-            <li>
-                <a class="nav-item" onclick="switchView('ip-analyzer')" id="nav-ip-analyzer">
-                    <i class="fa-solid fa-network-wired"></i> Analyseur IP
-                </a>
-            </li>
+            <li class="nav-section-title">Outils Quotidiens</li>
+            <li><a class="nav-item" onclick="switchView('notes')" id="nav-notes"><i class="fa-solid fa-note-sticky"></i> Prise de Notes</a></li>
+            <li><a class="nav-item" onclick="switchView('calculator')" id="nav-calculator"><i class="fa-solid fa-calculator"></i> Calculatrice</a></li>
+            <li><a class="nav-item" onclick="switchView('converter')" id="nav-converter"><i class="fa-solid fa-arrow-right-arrow-left"></i> Convertisseur Unités</a></li>
+
+            <li class="nav-section-title">Sécurité & Réseau</li>
+            <li><a class="nav-item" onclick="switchView('generator')" id="nav-generator"><i class="fa-solid fa-key"></i> Mot de Passe</a></li>
+            <li><a class="nav-item" onclick="switchView('ip-analyzer')" id="nav-ip-analyzer"><i class="fa-solid fa-network-wired"></i> Analyseur IP</a></li>
         </ul>
     </aside>
 
     <!-- MAIN WRAPPER -->
     <div class="main-wrapper">
-        <!-- HEADER -->
         <header class="header">
             <div class="header-search">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="global-search" placeholder="Rechercher une ressource..." onkeyup="filterExplorer()">
+                <input type="text" id="global-search" placeholder="Recherche rapide..." onkeyup="filterExplorer()">
             </div>
 
             <div class="header-actions">
-                <div class="live-clock" id="live-clock">
-                    <i class="fa-regular fa-clock"></i> <span>00:00:00</span>
-                </div>
-                <button class="btn-icon" onclick="toggleZenMode()" title="Mode Zen">
-                    <i class="fa-solid fa-expand"></i>
-                </button>
-                <button class="btn-icon" onclick="toggleTheme()" id="theme-toggle-btn" title="Changer le thème">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
+                <div class="live-clock" id="live-clock"><i class="fa-regular fa-clock"></i> <span>00:00:00</span></div>
+                <button class="btn-icon" onclick="toggleZenMode()" title="Mode Zen"><i class="fa-solid fa-expand"></i></button>
+                <button class="btn-icon" onclick="toggleTheme()" id="theme-toggle-btn" title="Thème"><i class="fa-solid fa-moon"></i></button>
             </div>
         </header>
 
-        <!-- CONTENT AREA -->
         <main class="content">
-            
-            <!-- VUE: DASHBOARD -->
+
+            <!-- VUE 1: DASHBOARD -->
             <section id="view-dashboard" class="view-section active-view">
                 <div class="page-header">
                     <div>
                         <h1 class="page-title">Tableau de bord</h1>
-                        <p class="page-subtitle">Vue d'ensemble de vos ressources et outils professionnels.</p>
+                        <p class="page-subtitle">Accès rapide à l'ensemble de vos outils et fichiers enregistrés.</p>
                     </div>
-                    <button class="btn btn-primary" onclick="openAddModal()">
-                        <i class="fa-solid fa-plus"></i> Nouvelle Ressource
-                    </button>
+                    <button class="btn btn-primary" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Ajouter une ressource</button>
                 </div>
 
                 <div class="grid-container">
                     <div class="card">
-                        <div class="card-header">
-                            <span class="card-title"><i class="fa-solid fa-folder"></i> Total Fichiers & Liens</span>
-                        </div>
-                        <h2 style="font-size: 2rem;" id="stat-resources-count">0</h2>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">Éléments gérés dans l'explorateur</p>
+                        <div class="card-title"><i class="fa-solid fa-folder"></i> Total Ressources</div>
+                        <h2 style="font-size:2rem;" id="stat-resources-count">0</h2>
+                        <p style="font-size:0.85rem; color:var(--text-muted);">Gérées dans l'explorateur</p>
                     </div>
 
                     <div class="card">
-                        <div class="card-header">
-                            <span class="card-title"><i class="fa-solid fa-star"></i> Favoris</span>
-                        </div>
-                        <h2 style="font-size: 2rem;" id="stat-favorites-count">0</h2>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">Ressources épinglées</p>
+                        <div class="card-title"><i class="fa-solid fa-star"></i> Favoris</div>
+                        <h2 style="font-size:2rem;" id="stat-favorites-count">0</h2>
+                        <p style="font-size:0.85rem; color:var(--text-muted);">Ressources épinglées</p>
                     </div>
 
                     <div class="card">
-                        <div class="card-header">
-                            <span class="card-title"><i class="fa-solid fa-shield-halved"></i> Données Locales</span>
-                        </div>
-                        <p style="font-size: 0.875rem; color: var(--text-muted);">
-                            Stockage 100% privé dans le navigateur via `localStorage`. Aucune donnée n'est transmise vers des serveurs tiers.
-                        </p>
+                        <div class="card-title"><i class="fa-solid fa-note-sticky"></i> Note Rapide</div>
+                        <textarea id="dash-quick-note" class="form-control" rows="3" placeholder="Écrivez une note temporaire..." oninput="localStorage.setItem('ska_quicknote', this.value)"></textarea>
                     </div>
                 </div>
             </section>
 
-            <!-- VUE: EXPLORATEUR DE FICHIERS DÉVELOPPÉ -->
+            <!-- VUE 2: EXPLORATEUR DE FICHIERS COMPLET -->
             <section id="view-explorer" class="view-section">
                 <div class="page-header">
                     <div>
-                        <h1 class="page-title">Explorateur de Ressources</h1>
-                        <p class="page-subtitle">Organisez, filtrez et gérez vos liens et documents professionnels.</p>
+                        <h1 class="page-title">Explorateur Avancé</h1>
+                        <p class="page-subtitle">Gérez vos fichiers, raccourcis web et documentations par dossier.</p>
                     </div>
-                    <button class="btn btn-primary" onclick="openAddModal()">
-                        <i class="fa-solid fa-plus"></i> Ajouter une ressource
-                    </button>
+                    <button class="btn btn-primary" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> Nouveau fichier/lien</button>
                 </div>
 
-                <div class="explorer-layout">
-                    <!-- Barre latérale de l'explorateur -->
+                <div class="explorer-container">
                     <div class="explorer-sidebar">
                         <span class="form-label">Emplacements</span>
                         <ul class="folder-tree">
-                            <li class="folder-item active" onclick="setCategoryFilter('all', this)">
-                                <i class="fa-solid fa-border-all"></i> Tous les éléments
-                            </li>
-                            <li class="folder-item" onclick="setCategoryFilter('favoris', this)">
-                                <i class="fa-solid fa-star" style="color: var(--warning-color);"></i> Favoris
-                            </li>
+                            <li class="folder-item active" onclick="setCategoryFilter('all', this)"><i class="fa-solid fa-border-all"></i> Tous les éléments</li>
+                            <li class="folder-item" onclick="setCategoryFilter('favoris', this)"><i class="fa-solid fa-star" style="color:var(--warning-color);"></i> Favoris</li>
                         </ul>
 
-                        <span class="form-label" style="margin-top: 10px;">Dossiers</span>
+                        <span class="form-label" style="margin-top:10px;">Dossiers</span>
                         <ul class="folder-tree">
-                            <li class="folder-item" onclick="setCategoryFilter('Web', this)">
-                                <i class="fa-solid fa-folder"></i> Web & Outils
-                            </li>
-                            <li class="folder-item" onclick="setCategoryFilter('Documentation', this)">
-                                <i class="fa-solid fa-folder"></i> Documentation
-                            </li>
-                            <li class="folder-item" onclick="setCategoryFilter('Réseau', this)">
-                                <i class="fa-solid fa-folder"></i> Réseau & Admin
-                            </li>
+                            <li class="folder-item" onclick="setCategoryFilter('Web', this)"><i class="fa-solid fa-folder"></i> Web & Outils</li>
+                            <li class="folder-item" onclick="setCategoryFilter('Documentation', this)"><i class="fa-solid fa-folder"></i> Documentation</li>
+                            <li class="folder-item" onclick="setCategoryFilter('Réseau', this)"><i class="fa-solid fa-folder"></i> Réseau & Projets</li>
+                            <li class="folder-item" onclick="setCategoryFilter('Personnel', this)"><i class="fa-solid fa-folder"></i> Personnel</li>
                         </ul>
                     </div>
 
-                    <!-- Zone principale de l'explorateur -->
                     <div class="explorer-main">
                         <div class="explorer-toolbar">
-                            <div class="explorer-breadcrumbs">
-                                <i class="fa-solid fa-folder-open"></i> Explorateur / <span id="current-folder-label">Tous les éléments</span>
-                            </div>
-                            <div class="view-options">
-                                <button class="btn-icon" onclick="setExplorerView('grid')" title="Vue en grille">
-                                    <i class="fa-solid fa-grip"></i>
-                                </button>
-                                <button class="btn-icon" onclick="setExplorerView('list')" title="Vue en liste">
-                                    <i class="fa-solid fa-list"></i>
-                                </button>
+                            <div style="font-size:0.9rem; font-weight:600;" id="current-folder-label">Tous les éléments</div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn-icon" onclick="setExplorerView('grid')" title="Grille"><i class="fa-solid fa-grip"></i></button>
+                                <button class="btn-icon" onclick="setExplorerView('list')" title="Liste"><i class="fa-solid fa-list"></i></button>
                             </div>
                         </div>
 
-                        <!-- Grille de fichiers -->
-                        <div class="explorer-grid" id="explorer-grid">
-                            <!-- Les éléments seront injectés ici par JS -->
+                        <div class="explorer-grid" id="explorer-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VUE 3: PRISE DE NOTES -->
+            <section id="view-notes" class="view-section">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Bloc-Notes</h1>
+                        <p class="page-subtitle">Rédigez et sauvegardez automatiquement vos textes.</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <input type="text" id="note-title" class="form-control" placeholder="Titre de la note..." style="font-weight:600;" oninput="saveNotes()">
+                    <textarea id="note-body" class="form-control" rows="12" placeholder="Écrivez votre texte ici..." oninput="saveNotes()"></textarea>
+                </div>
+            </section>
+
+            <!-- VUE 4: CALCULATRICE -->
+            <section id="view-calculator" class="view-section">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Calculatrice</h1>
+                        <p class="page-subtitle">Effectuez vos calculs rapides.</p>
+                    </div>
+                </div>
+                <div style="max-width:320px;">
+                    <div class="card">
+                        <input type="text" id="calc-display" class="form-control" readonly style="text-align:right; font-size:1.2rem; font-family:monospace;">
+                        <div class="calc-grid">
+                            <button class="calc-btn" onclick="calcClear()">C</button>
+                            <button class="calc-btn" onclick="calcAppend('/')">/</button>
+                            <button class="calc-btn" onclick="calcAppend('*')">*</button>
+                            <button class="calc-btn" onclick="calcAppend('-')">-</button>
+                            <button class="calc-btn" onclick="calcAppend('7')">7</button>
+                            <button class="calc-btn" onclick="calcAppend('8')">8</button>
+                            <button class="calc-btn" onclick="calcAppend('9')">9</button>
+                            <button class="calc-btn" onclick="calcAppend('+')">+</button>
+                            <button class="calc-btn" onclick="calcAppend('4')">4</button>
+                            <button class="calc-btn" onclick="calcAppend('5')">5</button>
+                            <button class="calc-btn" onclick="calcAppend('6')">6</button>
+                            <button class="calc-btn" onclick="calcCompute()" style="grid-row: span 2; height:100%; background:var(--accent-color); color:#fff;">=</button>
+                            <button class="calc-btn" onclick="calcAppend('1')">1</button>
+                            <button class="calc-btn" onclick="calcAppend('2')">2</button>
+                            <button class="calc-btn" onclick="calcAppend('3')">3</button>
+                            <button class="calc-btn" onclick="calcAppend('0')" style="grid-column: span 2;">0</button>
+                            <button class="calc-btn" onclick="calcAppend('.')">.</button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- VUE: GENERATEUR DE MOT DE PASSE -->
+            <!-- VUE 5: CONVERTISSEUR -->
+            <section id="view-converter" class="view-section">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Convertisseur d'unités</h1>
+                        <p class="page-subtitle">Convertissez rapidement des données (Mo / Go / To).</p>
+                    </div>
+                </div>
+                <div style="max-width:450px;">
+                    <div class="card">
+                        <div class="form-group">
+                            <label class="form-label">Valeur en Gigaoctets (Go)</label>
+                            <input type="number" id="convert-go" class="form-control" placeholder="Ex: 10" oninput="convertData()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Résultats</label>
+                            <div class="result-box" id="convert-result">Mo: 0 | To: 0</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VUE 6: MOT DE PASSE -->
             <section id="view-generator" class="view-section">
                 <div class="page-header">
                     <div>
                         <h1 class="page-title">Générateur de Mot de Passe</h1>
-                        <p class="page-subtitle">Créez des chaînes hautement sécurisées instantanément.</p>
+                        <p class="page-subtitle">Créez des mots de passe sécurisés.</p>
                     </div>
                 </div>
-
-                <div style="max-width: 550px;">
+                <div style="max-width:500px;">
                     <div class="card">
+                        <div class="result-box" id="password-output">---</div>
                         <div class="form-group">
-                            <label class="form-label">Mot de passe généré</label>
-                            <div style="display: flex; gap: 10px;">
-                                <div class="result-box" id="password-output" style="flex: 1;">---</div>
-                                <button class="btn btn-secondary" onclick="copyPassword()" title="Copier">
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
-                            </div>
+                            <label class="form-label">Longueur (<span id="pass-len-val">16</span>)</label>
+                            <input type="range" id="pass-length" min="8" max="64" value="16" oninput="document.getElementById('pass-len-val').innerText = this.value">
                         </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Longueur (<span id="pass-length-val">16</span> caractères)</label>
-                            <input type="range" id="pass-length" min="8" max="64" value="16" style="width:100%" oninput="document.getElementById('pass-length-val').innerText = this.value">
-                        </div>
-
-                        <div class="checkbox-group">
-                            <label class="checkbox-label"><input type="checkbox" id="pass-upper" checked> Majuscules (A-Z)</label>
-                            <label class="checkbox-label"><input type="checkbox" id="pass-lower" checked> Minuscules (a-z)</label>
-                            <label class="checkbox-label"><input type="checkbox" id="pass-nums" checked> Chiffres (0-9)</label>
-                            <label class="checkbox-label"><input type="checkbox" id="pass-symbols" checked> Symboles (@#$%)</label>
-                        </div>
-
-                        <button class="btn btn-primary" onclick="generatePassword()" style="width: 100%;">
-                            <i class="fa-solid fa-arrows-rotate"></i> Générer
-                        </button>
+                        <button class="btn btn-primary" onclick="generatePassword()"><i class="fa-solid fa-arrows-rotate"></i> Générer</button>
                     </div>
                 </div>
             </section>
 
-            <!-- VUE: ANALYSEUR IP -->
+            <!-- VUE 7: ANALYSEUR IP -->
             <section id="view-ip-analyzer" class="view-section">
                 <div class="page-header">
                     <div>
                         <h1 class="page-title">Analyseur d'adresse IP</h1>
-                        <p class="page-subtitle">Obtenez des informations géographiques et réseaux à partir d'une adresse IP.</p>
+                        <p class="page-subtitle">Localisez une adresse IP publique.</p>
                     </div>
                 </div>
-
-                <div style="max-width: 550px;">
+                <div style="max-width:500px;">
                     <div class="card">
-                        <div class="form-group">
-                            <label class="form-label">Adresse IP (IPv4)</label>
-                            <div style="display: flex; gap: 10px;">
-                                <input type="text" id="ip-input" class="form-control" placeholder="Ex: 8.8.8.8">
-                                <button class="btn btn-primary" onclick="analyzeIP()">Analyser</button>
-                            </div>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="ip-input" class="form-control" placeholder="Ex: 8.8.8.8">
+                            <button class="btn btn-primary" onclick="analyzeIP()">Analyser</button>
                         </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Résultats</label>
-                            <div class="result-box" id="ip-result" style="height: auto; min-height: 120px; align-items: flex-start; white-space: pre-wrap;">Entrez une IP valide et cliquez sur Analyser.</div>
-                        </div>
+                        <div class="result-box" id="ip-result" style="height:auto; min-height:100px; white-space:pre-wrap;">Entrez une IP...</div>
                     </div>
                 </div>
             </section>
@@ -932,71 +698,48 @@
         </main>
     </div>
 
-    <!-- MODAL (AJOUT RESSOURCE) -->
+    <!-- MODAL AJOUT RESSOURCE -->
     <div class="modal-overlay" id="add-modal">
         <div class="modal-card">
-            <div class="modal-header">
-                <h3 class="modal-title">Nouvelle Ressource</h3>
-                <button class="btn-close" onclick="closeAddModal()">✕</button>
-            </div>
-            
+            <h3>Ajouter un élément à l'explorateur</h3>
             <div class="form-group">
                 <label class="form-label">Titre</label>
-                <input type="text" id="item-title" class="form-control" placeholder="Titre de la ressource...">
+                <input type="text" id="item-title" class="form-control" placeholder="Titre...">
             </div>
-
             <div class="form-group">
-                <label class="form-label">URL / Lien</label>
-                <input type="url" id="item-url" class="form-control" placeholder="https://example.com">
+                <label class="form-label">Lien / URL</label>
+                <input type="url" id="item-url" class="form-control" placeholder="https://...">
             </div>
-
             <div class="form-group">
-                <label class="form-label">Dossier / Catégorie</label>
+                <label class="form-label">Dossier</label>
                 <select id="item-category" class="form-control">
                     <option value="Web">Web & Outils</option>
                     <option value="Documentation">Documentation</option>
-                    <option value="Réseau">Réseau & Admin</option>
+                    <option value="Réseau">Réseau & Projets</option>
+                    <option value="Personnel">Personnel</option>
                 </select>
             </div>
-
             <div class="form-group">
                 <label class="form-label">Description</label>
-                <input type="text" id="item-desc" class="form-control" placeholder="Courte description...">
+                <input type="text" id="item-desc" class="form-control" placeholder="Informations complémentaires...">
             </div>
-
-            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 10px;">
+            <div style="display:flex; gap:10px; justify-content:flex-end;">
                 <button class="btn btn-secondary" onclick="closeAddModal()">Annuler</button>
                 <button class="btn btn-primary" onclick="saveItem()">Enregistrer</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPTS -->
     <script>
-        // --- ÉTAT GLOBAL DE L'APPLICATION ---
         let currentCategory = 'all';
-        let currentViewMode = 'grid';
-
         let state = {
             resources: JSON.parse(localStorage.getItem('ska_resources')) || [
-                { id: 1, title: 'Google Search', url: 'https://google.com', category: 'Web', desc: 'Moteur de recherche généraliste', favorite: true },
-                { id: 2, title: 'MDN Web Docs', url: 'https://developer.mozilla.org', category: 'Documentation', desc: 'Documentation officielle HTML/CSS/JS', favorite: false },
-                { id: 3, title: 'Cloudflare DNS', url: 'https://1.1.1.1', category: 'Réseau', desc: 'Service de résolution DNS rapide', favorite: false }
+                { id: 1, title: 'Google', url: 'https://google.com', category: 'Web', desc: 'Moteur de recherche', favorite: true },
+                { id: 2, title: 'Documentation MDN', url: 'https://developer.mozilla.org', category: 'Documentation', desc: 'Ressources Web', favorite: false }
             ]
         };
 
-        // --- GESTION DU REFRESH / HORLOGE ---
-        function updateClock() {
-            const clockEl = document.querySelector('#live-clock span');
-            if (clockEl) {
-                const now = new Date();
-                clockEl.textContent = now.toLocaleTimeString('fr-FR');
-            }
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        // --- NAVIGATION DES VUES ---
+        // NAVIGATION
         function switchView(viewName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active-view'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -1008,167 +751,70 @@
             if (targetNav) targetNav.classList.add('active');
         }
 
-        // --- THEME & ZEN MODE ---
+        // HORLOGE & THEME
+        setInterval(() => {
+            document.querySelector('#live-clock span').textContent = new Date().toLocaleTimeString('fr-FR');
+        }, 1000);
+
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
-            const icon = document.querySelector('#theme-toggle-btn i');
-            if (document.body.classList.contains('light-mode')) {
-                icon.className = 'fa-solid fa-sun';
-            } else {
-                icon.className = 'fa-solid fa-moon';
-            }
         }
 
         function toggleZenMode() {
             document.body.classList.toggle('zen-mode');
         }
 
-        // --- GENERATEUR DE MOT DE PASSE ---
-        function generatePassword() {
-            const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            const lower = "abcdefghijklmnopqrstuvwxyz";
-            const nums = "0123456789";
-            const symbols = "!@#$%^&*()_+-=[]{}|;:,.<>?";
-
-            let chars = "";
-            if (document.getElementById('pass-upper').checked) chars += upper;
-            if (document.getElementById('pass-lower').checked) chars += lower;
-            if (document.getElementById('pass-nums').checked) chars += nums;
-            if (document.getElementById('pass-symbols').checked) chars += symbols;
-
-            if (!chars) chars = lower + nums;
-
-            const length = parseInt(document.getElementById('pass-length').value);
-            let password = "";
-            
-            for (let i = 0; i < length; i++) {
-                password += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-
-            document.getElementById('password-output').innerText = password;
-        }
-
-        function copyPassword() {
-            const pwd = document.getElementById('password-output').innerText;
-            if (pwd && pwd !== '---') {
-                navigator.clipboard.writeText(pwd);
-                alert('Mot de passe copié dans le presse-papier !');
-            }
-        }
-
-        // --- ANALYSEUR IP ---
-        async function analyzeIP() {
-            const ip = document.getElementById('ip-input').value.trim();
-            const resultBox = document.getElementById('ip-result');
-
-            if (!ip) {
-                resultBox.innerText = "Veuillez entrer une adresse IP valide.";
-                return;
-            }
-
-            resultBox.innerText = "Chargement des données...";
-
-            try {
-                const response = await fetch(`http://ip-api.com/json/${ip}`);
-                const data = await response.json();
-
-                if (data.status === "fail") {
-                    resultBox.innerText = `Erreur: ${data.message}`;
-                } else {
-                    resultBox.innerText = `IP: ${data.query}\nPays: ${data.country} (${data.countryCode})\nRégion: ${data.regionName}\nVille: ${data.city}\nFAI: ${data.isp}\nOrganisation: ${data.org}`;
-                }
-            } catch (err) {
-                resultBox.innerText = "Impossible de contacter le service de géolocalisation d'IP.";
-            }
-        }
-
-        // --- EXPLORATEUR DE FICHIERS / RESSOURCES ---
-        function setCategoryFilter(category, element) {
-            currentCategory = category;
-            
+        // EXPLORATEUR
+        function setCategoryFilter(cat, element) {
+            currentCategory = cat;
             document.querySelectorAll('.folder-item').forEach(el => el.classList.remove('active'));
-            if (element) element.classList.add('active');
-
-            const labelMap = {
-                'all': 'Tous les éléments',
-                'favoris': 'Favoris',
-                'Web': 'Web & Outils',
-                'Documentation': 'Documentation',
-                'Réseau': 'Réseau & Admin'
-            };
-
-            document.getElementById('current-folder-label').innerText = labelMap[category] || category;
+            if(element) element.classList.add('active');
+            document.getElementById('current-folder-label').innerText = cat === 'all' ? 'Tous les éléments' : cat;
             renderExplorer();
         }
 
         function setExplorerView(mode) {
-            currentViewMode = mode;
             const grid = document.getElementById('explorer-grid');
-            if (mode === 'list') {
-                grid.classList.add('list-view');
-            } else {
-                grid.classList.remove('list-view');
-            }
+            if (mode === 'list') grid.classList.add('list-view');
+            else grid.classList.remove('list-view');
         }
 
         function renderExplorer() {
             const grid = document.getElementById('explorer-grid');
-            const countEl = document.getElementById('stat-resources-count');
-            const favCountEl = document.getElementById('stat-favorites-count');
-
-            const favs = state.resources.filter(r => r.favorite);
-            if (favCountEl) favCountEl.innerText = favs.length;
-            if (countEl) countEl.innerText = state.resources.length;
-
             let filtered = state.resources;
 
-            if (currentCategory === 'favoris') {
-                filtered = state.resources.filter(r => r.favorite);
-            } else if (currentCategory !== 'all') {
-                filtered = state.resources.filter(r => r.category === currentCategory);
-            }
+            if (currentCategory === 'favoris') filtered = state.resources.filter(r => r.favorite);
+            else if (currentCategory !== 'all') filtered = state.resources.filter(r => r.category === currentCategory);
+
+            document.getElementById('stat-resources-count').innerText = state.resources.length;
+            document.getElementById('stat-favorites-count').innerText = state.resources.filter(r => r.favorite).length;
 
             if (filtered.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">Aucun élément trouvé dans ce dossier.</div>`;
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding:30px;">Dossier vide.</div>`;
                 return;
             }
 
-            grid.innerHTML = filtered.map(res => `
+            grid.innerHTML = filtered.map(r => `
                 <div class="file-card">
-                    <div class="file-icon">
-                        <i class="${getIconForCategory(res.category)}"></i>
-                    </div>
+                    <div class="file-icon"><i class="fa-solid fa-file"></i></div>
                     <div class="file-info">
-                        <div class="file-name">${escapeHtml(res.title)}</div>
-                        <div class="file-meta">${escapeHtml(res.category || 'Général')} • ${escapeHtml(res.desc || 'Sans description')}</div>
+                        <div class="file-name">${r.title}</div>
+                        <div class="file-meta">${r.category} - ${r.desc || 'Sans desc'}</div>
                     </div>
                     <div class="file-actions">
-                        <button class="btn-icon" style="width:32px; height:32px;" onclick="toggleFavorite(${res.id})" title="Favori">
-                            <i class="${res.favorite ? 'fa-solid' : 'fa-regular'} fa-star" style="color: ${res.favorite ? 'var(--warning-color)' : 'var(--text-muted)'}; font-size: 0.85rem;"></i>
+                        <button class="btn-icon" style="width:30px;height:30px;" onclick="toggleFavorite(${r.id})">
+                            <i class="${r.favorite ? 'fa-solid' : 'fa-regular'} fa-star" style="color:${r.favorite ? 'var(--warning-color)' : ''}"></i>
                         </button>
-                        <a href="${escapeHtml(res.url)}" target="_blank" class="btn-icon" style="width:32px; height:32px;" title="Ouvrir">
-                            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.85rem;"></i>
-                        </a>
-                        <button class="btn-icon" style="width:32px; height:32px;" onclick="deleteResource(${res.id})" title="Supprimer">
-                            <i class="fa-solid fa-trash-can" style="color:var(--danger-color); font-size:0.85rem;"></i>
-                        </button>
+                        <a href="${r.url}" target="_blank" class="btn-icon" style="width:30px;height:30px;"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                        <button class="btn-icon" style="width:30px;height:30px;" onclick="deleteResource(${r.id})"><i class="fa-solid fa-trash" style="color:var(--danger-color)"></i></button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function getIconForCategory(cat) {
-            switch(cat) {
-                case 'Web': return 'fa-solid fa-globe';
-                case 'Documentation': return 'fa-solid fa-file-code';
-                case 'Réseau': return 'fa-solid fa-server';
-                default: return 'fa-solid fa-link';
-            }
-        }
-
         function toggleFavorite(id) {
             const item = state.resources.find(r => r.id === id);
-            if (item) {
+            if(item) {
                 item.favorite = !item.favorite;
                 localStorage.setItem('ska_resources', JSON.stringify(state.resources));
                 renderExplorer();
@@ -1176,34 +822,17 @@
         }
 
         function saveItem() {
-            const title = document.getElementById('item-title').value.trim();
-            const url = document.getElementById('item-url').value.trim();
+            const title = document.getElementById('item-title').value;
+            const url = document.getElementById('item-url').value;
             const category = document.getElementById('item-category').value;
-            const desc = document.getElementById('item-desc').value.trim();
+            const desc = document.getElementById('item-desc').value;
 
-            if (!title || !url) {
-                alert('Veuillez remplir le titre et l\'URL.');
-                return;
-            }
+            if(!title || !url) return alert('Titre et URL requis.');
 
-            const newItem = {
-                id: Date.now(),
-                title,
-                url,
-                category,
-                desc,
-                favorite: false
-            };
-
-            state.resources.push(newItem);
+            state.resources.push({ id: Date.now(), title, url, category, desc, favorite: false });
             localStorage.setItem('ska_resources', JSON.stringify(state.resources));
-            
             renderExplorer();
             closeAddModal();
-
-            document.getElementById('item-title').value = '';
-            document.getElementById('item-url').value = '';
-            document.getElementById('item-desc').value = '';
         }
 
         function deleteResource(id) {
@@ -1212,33 +841,52 @@
             renderExplorer();
         }
 
-        function filterExplorer() {
-            const query = document.getElementById('global-search').value.toLowerCase();
-            const cards = document.querySelectorAll('.file-card');
-            
-            cards.forEach(card => {
-                const text = card.innerText.toLowerCase();
-                card.style.display = text.includes(query) ? 'flex' : 'none';
-            });
+        function openAddModal() { document.getElementById('add-modal').classList.add('open'); }
+        function closeAddModal() { document.getElementById('add-modal').classList.remove('open'); }
+
+        // OUTILS SECONDAIRES
+        function saveNotes() {
+            localStorage.setItem('ska_note_title', document.getElementById('note-title').value);
+            localStorage.setItem('ska_note_body', document.getElementById('note-body').value);
         }
 
-        // --- MODALE ---
-        function openAddModal() {
-            document.getElementById('add-modal').classList.add('open');
+        function calcAppend(val) { document.getElementById('calc-display').value += val; }
+        function calcClear() { document.getElementById('calc-display').value = ''; }
+        function calcCompute() {
+            try { document.getElementById('calc-display').value = eval(document.getElementById('calc-display').value); }
+            catch(e) { document.getElementById('calc-display').value = 'Erreur'; }
         }
 
-        function closeAddModal() {
-            document.getElementById('add-modal').classList.remove('open');
+        function convertData() {
+            const val = parseFloat(document.getElementById('convert-go').value) || 0;
+            document.getElementById('convert-result').innerText = `Mo: ${val * 1024} | To: ${(val / 1024).toFixed(3)}`;
         }
 
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        function generatePassword() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+            let len = parseInt(document.getElementById('pass-length').value);
+            let res = "";
+            for(let i=0; i<len; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+            document.getElementById('password-output').innerText = res;
         }
 
-        // Initialisation
+        async function analyzeIP() {
+            const ip = document.getElementById('ip-input').value.trim();
+            if(!ip) return;
+            try {
+                const res = await fetch(`http://ip-api.com/json/${ip}`);
+                const data = await res.json();
+                document.getElementById('ip-result').innerText = JSON.stringify(data, null, 2);
+            } catch(e) { document.getElementById('ip-result').innerText = "Erreur de requête."; }
+        }
+
+        // INITIALISATION
         document.addEventListener('DOMContentLoaded', () => {
             renderExplorer();
             generatePassword();
+            document.getElementById('dash-quick-note').value = localStorage.getItem('ska_quicknote') || '';
+            document.getElementById('note-title').value = localStorage.getItem('ska_note_title') || '';
+            document.getElementById('note-body').value = localStorage.getItem('ska_note_body') || '';
         });
     </script>
 </body>
