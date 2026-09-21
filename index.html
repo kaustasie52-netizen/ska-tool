@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKA Tool V6.2 - Professional Dashboard</title>
+    <title>SKA Tool V6.2 - Professional Workspace</title>
     <!-- Police Inter & Icons FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -287,6 +287,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
         .page-title {
@@ -299,6 +301,173 @@
             font-size: 0.875rem;
             color: var(--text-muted);
             margin-top: 4px;
+        }
+
+        /* --- EXPLORATEUR DE FICHIERS AVANCÉ --- */
+        .explorer-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 20px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            min-height: 600px;
+            overflow: hidden;
+        }
+
+        .explorer-sidebar {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-right: 1px solid var(--border-color);
+            padding: 20px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .folder-tree {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .folder-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .folder-item:hover, .folder-item.active {
+            background-color: rgba(59, 130, 246, 0.15);
+            color: var(--text-main);
+        }
+
+        .folder-item.active {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .folder-item i {
+            color: var(--warning-color);
+        }
+
+        .explorer-main {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .explorer-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .explorer-breadcrumbs {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .explorer-breadcrumbs span {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .view-options {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .explorer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .explorer-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        .file-card {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .file-card:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .list-view .file-card {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .file-icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.02);
+            border-radius: var(--radius-md);
+        }
+
+        .list-view .file-icon {
+            height: auto;
+            font-size: 1.2rem;
+            background: none;
+        }
+
+        .file-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .file-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+            word-break: break-word;
+        }
+
+        .file-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
         }
 
         /* --- CARDS & GRID --- */
@@ -318,12 +487,6 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
-        }
-
-        .card:hover {
-            border-color: rgba(59, 130, 246, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
 
         .card-header {
@@ -408,15 +571,6 @@
 
         .btn-secondary:hover {
             background-color: var(--border-color);
-        }
-
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            opacity: 0.9;
         }
 
         /* --- MODAL --- */
@@ -520,15 +674,22 @@
         }
 
         /* Responsive */
+        @media (max-width: 900px) {
+            .explorer-layout {
+                grid-template-columns: 1fr;
+            }
+            .explorer-sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
             }
             .main-wrapper {
                 margin-left: 0;
-            }
-            .sidebar.mobile-open {
-                transform: translateX(0);
             }
             .header-search {
                 width: 180px;
@@ -554,8 +715,8 @@
                 </a>
             </li>
             <li>
-                <a class="nav-item" onclick="switchView('resources')" id="nav-resources">
-                    <i class="fa-solid fa-bookmark"></i> Ressources & Liens
+                <a class="nav-item" onclick="switchView('explorer')" id="nav-explorer">
+                    <i class="fa-solid fa-folder-open"></i> Explorateur
                 </a>
             </li>
 
@@ -579,7 +740,7 @@
         <header class="header">
             <div class="header-search">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="global-search" placeholder="Rechercher une ressource..." onkeyup="filterResources()">
+                <input type="text" id="global-search" placeholder="Rechercher une ressource..." onkeyup="filterExplorer()">
             </div>
 
             <div class="header-actions">
@@ -603,7 +764,7 @@
                 <div class="page-header">
                     <div>
                         <h1 class="page-title">Tableau de bord</h1>
-                        <p class="page-subtitle">Vue d'ensemble de vos outils et raccourcis professionnels.</p>
+                        <p class="page-subtitle">Vue d'ensemble de vos ressources et outils professionnels.</p>
                     </div>
                     <button class="btn btn-primary" onclick="openAddModal()">
                         <i class="fa-solid fa-plus"></i> Nouvelle Ressource
@@ -613,38 +774,91 @@
                 <div class="grid-container">
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title"><i class="fa-solid fa-link"></i> Liens Sauvegardés</span>
-                            <i class="fa-solid fa-ellipsis-vertical" style="color: var(--text-muted)"></i>
+                            <span class="card-title"><i class="fa-solid fa-folder"></i> Total Fichiers & Liens</span>
                         </div>
                         <h2 style="font-size: 2rem;" id="stat-resources-count">0</h2>
-                        <p style="font-size: 0.85rem; color: var(--text-muted);">Ressources enregistrées localement</p>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Éléments gérés dans l'explorateur</p>
                     </div>
 
                     <div class="card">
                         <div class="card-header">
-                            <span class="card-title"><i class="fa-solid fa-shield-check"></i> Securité</span>
+                            <span class="card-title"><i class="fa-solid fa-star"></i> Favoris</span>
+                        </div>
+                        <h2 style="font-size: 2rem;" id="stat-favorites-count">0</h2>
+                        <p style="font-size: 0.85rem; color: var(--text-muted);">Ressources épinglées</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title"><i class="fa-solid fa-shield-halved"></i> Données Locales</span>
                         </div>
                         <p style="font-size: 0.875rem; color: var(--text-muted);">
-                            Vos données sont actuellement stockées de manière 100% isolée dans votre navigateur (localStorage).
+                            Stockage 100% privé dans le navigateur via `localStorage`. Aucune donnée n'est transmise vers des serveurs tiers.
                         </p>
                     </div>
                 </div>
             </section>
 
-            <!-- VUE: RESSOURCES -->
-            <section id="view-resources" class="view-section">
+            <!-- VUE: EXPLORATEUR DE FICHIERS DÉVELOPPÉ -->
+            <section id="view-explorer" class="view-section">
                 <div class="page-header">
                     <div>
-                        <h1 class="page-title">Ressources & Liens</h1>
-                        <p class="page-subtitle">Gestion de vos raccourcis et liens fréquemment utilisés.</p>
+                        <h1 class="page-title">Explorateur de Ressources</h1>
+                        <p class="page-subtitle">Organisez, filtrez et gérez vos liens et documents professionnels.</p>
                     </div>
                     <button class="btn btn-primary" onclick="openAddModal()">
-                        <i class="fa-solid fa-plus"></i> Ajouter
+                        <i class="fa-solid fa-plus"></i> Ajouter une ressource
                     </button>
                 </div>
 
-                <div class="grid-container" id="resources-grid">
-                    <!-- Généré dynamiquement en JS -->
+                <div class="explorer-layout">
+                    <!-- Barre latérale de l'explorateur -->
+                    <div class="explorer-sidebar">
+                        <span class="form-label">Emplacements</span>
+                        <ul class="folder-tree">
+                            <li class="folder-item active" onclick="setCategoryFilter('all', this)">
+                                <i class="fa-solid fa-border-all"></i> Tous les éléments
+                            </li>
+                            <li class="folder-item" onclick="setCategoryFilter('favoris', this)">
+                                <i class="fa-solid fa-star" style="color: var(--warning-color);"></i> Favoris
+                            </li>
+                        </ul>
+
+                        <span class="form-label" style="margin-top: 10px;">Dossiers</span>
+                        <ul class="folder-tree">
+                            <li class="folder-item" onclick="setCategoryFilter('Web', this)">
+                                <i class="fa-solid fa-folder"></i> Web & Outils
+                            </li>
+                            <li class="folder-item" onclick="setCategoryFilter('Documentation', this)">
+                                <i class="fa-solid fa-folder"></i> Documentation
+                            </li>
+                            <li class="folder-item" onclick="setCategoryFilter('Réseau', this)">
+                                <i class="fa-solid fa-folder"></i> Réseau & Admin
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Zone principale de l'explorateur -->
+                    <div class="explorer-main">
+                        <div class="explorer-toolbar">
+                            <div class="explorer-breadcrumbs">
+                                <i class="fa-solid fa-folder-open"></i> Explorateur / <span id="current-folder-label">Tous les éléments</span>
+                            </div>
+                            <div class="view-options">
+                                <button class="btn-icon" onclick="setExplorerView('grid')" title="Vue en grille">
+                                    <i class="fa-solid fa-grip"></i>
+                                </button>
+                                <button class="btn-icon" onclick="setExplorerView('list')" title="Vue en liste">
+                                    <i class="fa-solid fa-list"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grille de fichiers -->
+                        <div class="explorer-grid" id="explorer-grid">
+                            <!-- Les éléments seront injectés ici par JS -->
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -718,7 +932,7 @@
         </main>
     </div>
 
-    <!-- MODAL (AJOUT RESSORUCE) -->
+    <!-- MODAL (AJOUT RESSOURCE) -->
     <div class="modal-overlay" id="add-modal">
         <div class="modal-card">
             <div class="modal-header">
@@ -737,6 +951,15 @@
             </div>
 
             <div class="form-group">
+                <label class="form-label">Dossier / Catégorie</label>
+                <select id="item-category" class="form-control">
+                    <option value="Web">Web & Outils</option>
+                    <option value="Documentation">Documentation</option>
+                    <option value="Réseau">Réseau & Admin</option>
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label class="form-label">Description</label>
                 <input type="text" id="item-desc" class="form-control" placeholder="Courte description...">
             </div>
@@ -751,10 +974,14 @@
     <!-- SCRIPTS -->
     <script>
         // --- ÉTAT GLOBAL DE L'APPLICATION ---
+        let currentCategory = 'all';
+        let currentViewMode = 'grid';
+
         let state = {
             resources: JSON.parse(localStorage.getItem('ska_resources')) || [
-                { id: 1, title: 'Google', url: 'https://google.com', desc: 'Moteur de recherche' },
-                { id: 2, title: 'GitHub', url: 'https://github.com', desc: 'Hébergement de code source' }
+                { id: 1, title: 'Google Search', url: 'https://google.com', category: 'Web', desc: 'Moteur de recherche généraliste', favorite: true },
+                { id: 2, title: 'MDN Web Docs', url: 'https://developer.mozilla.org', category: 'Documentation', desc: 'Documentation officielle HTML/CSS/JS', favorite: false },
+                { id: 3, title: 'Cloudflare DNS', url: 'https://1.1.1.1', category: 'Réseau', desc: 'Service de résolution DNS rapide', favorite: false }
             ]
         };
 
@@ -829,7 +1056,7 @@
             }
         }
 
-        // --- ANALYSEUR IP (API Externe IP-API) ---
+        // --- ANALYSEUR IP ---
         async function analyzeIP() {
             const ip = document.getElementById('ip-input').value.trim();
             const resultBox = document.getElementById('ip-result');
@@ -855,32 +1082,103 @@
             }
         }
 
-        // --- GESTION DES RESSOURCES ---
-        function renderResources() {
-            const grid = document.getElementById('resources-grid');
-            const countEl = document.getElementById('stat-resources-count');
+        // --- EXPLORATEUR DE FICHIERS / RESSOURCES ---
+        function setCategoryFilter(category, element) {
+            currentCategory = category;
             
+            document.querySelectorAll('.folder-item').forEach(el => el.classList.remove('active'));
+            if (element) element.classList.add('active');
+
+            const labelMap = {
+                'all': 'Tous les éléments',
+                'favoris': 'Favoris',
+                'Web': 'Web & Outils',
+                'Documentation': 'Documentation',
+                'Réseau': 'Réseau & Admin'
+            };
+
+            document.getElementById('current-folder-label').innerText = labelMap[category] || category;
+            renderExplorer();
+        }
+
+        function setExplorerView(mode) {
+            currentViewMode = mode;
+            const grid = document.getElementById('explorer-grid');
+            if (mode === 'list') {
+                grid.classList.add('list-view');
+            } else {
+                grid.classList.remove('list-view');
+            }
+        }
+
+        function renderExplorer() {
+            const grid = document.getElementById('explorer-grid');
+            const countEl = document.getElementById('stat-resources-count');
+            const favCountEl = document.getElementById('stat-favorites-count');
+
+            const favs = state.resources.filter(r => r.favorite);
+            if (favCountEl) favCountEl.innerText = favs.length;
             if (countEl) countEl.innerText = state.resources.length;
 
-            grid.innerHTML = state.resources.map(res => `
-                <div class="card">
-                    <div class="card-header">
-                        <span class="card-title"><i class="fa-solid fa-globe"></i> ${escapeHtml(res.title)}</span>
-                        <button class="btn-icon" style="width:28px; height:28px; border:none;" onclick="deleteResource(${res.id})">
-                            <i class="fa-solid fa-trash-can" style="color:var(--danger-color); font-size:0.8rem;"></i>
+            let filtered = state.resources;
+
+            if (currentCategory === 'favoris') {
+                filtered = state.resources.filter(r => r.favorite);
+            } else if (currentCategory !== 'all') {
+                filtered = state.resources.filter(r => r.category === currentCategory);
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">Aucun élément trouvé dans ce dossier.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(res => `
+                <div class="file-card">
+                    <div class="file-icon">
+                        <i class="${getIconForCategory(res.category)}"></i>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name">${escapeHtml(res.title)}</div>
+                        <div class="file-meta">${escapeHtml(res.category || 'Général')} • ${escapeHtml(res.desc || 'Sans description')}</div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn-icon" style="width:32px; height:32px;" onclick="toggleFavorite(${res.id})" title="Favori">
+                            <i class="${res.favorite ? 'fa-solid' : 'fa-regular'} fa-star" style="color: ${res.favorite ? 'var(--warning-color)' : 'var(--text-muted)'}; font-size: 0.85rem;"></i>
+                        </button>
+                        <a href="${escapeHtml(res.url)}" target="_blank" class="btn-icon" style="width:32px; height:32px;" title="Ouvrir">
+                            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.85rem;"></i>
+                        </a>
+                        <button class="btn-icon" style="width:32px; height:32px;" onclick="deleteResource(${res.id})" title="Supprimer">
+                            <i class="fa-solid fa-trash-can" style="color:var(--danger-color); font-size:0.85rem;"></i>
                         </button>
                     </div>
-                    <p style="font-size:0.85rem; color:var(--text-muted); flex:1;">${escapeHtml(res.desc || 'Pas de description.')}</p>
-                    <a href="${escapeHtml(res.url)}" target="_blank" class="btn btn-secondary" style="width:100%;">
-                        Ouvrir le lien <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem;"></i>
-                    </a>
                 </div>
             `).join('');
+        }
+
+        function getIconForCategory(cat) {
+            switch(cat) {
+                case 'Web': return 'fa-solid fa-globe';
+                case 'Documentation': return 'fa-solid fa-file-code';
+                case 'Réseau': return 'fa-solid fa-server';
+                default: return 'fa-solid fa-link';
+            }
+        }
+
+        function toggleFavorite(id) {
+            const item = state.resources.find(r => r.id === id);
+            if (item) {
+                item.favorite = !item.favorite;
+                localStorage.setItem('ska_resources', JSON.stringify(state.resources));
+                renderExplorer();
+            }
         }
 
         function saveItem() {
             const title = document.getElementById('item-title').value.trim();
             const url = document.getElementById('item-url').value.trim();
+            const category = document.getElementById('item-category').value;
             const desc = document.getElementById('item-desc').value.trim();
 
             if (!title || !url) {
@@ -892,16 +1190,17 @@
                 id: Date.now(),
                 title,
                 url,
-                desc
+                category,
+                desc,
+                favorite: false
             };
 
             state.resources.push(newItem);
             localStorage.setItem('ska_resources', JSON.stringify(state.resources));
             
-            renderResources();
+            renderExplorer();
             closeAddModal();
 
-            // Clear inputs
             document.getElementById('item-title').value = '';
             document.getElementById('item-url').value = '';
             document.getElementById('item-desc').value = '';
@@ -910,12 +1209,12 @@
         function deleteResource(id) {
             state.resources = state.resources.filter(r => r.id !== id);
             localStorage.setItem('ska_resources', JSON.stringify(state.resources));
-            renderResources();
+            renderExplorer();
         }
 
-        function filterResources() {
+        function filterExplorer() {
             const query = document.getElementById('global-search').value.toLowerCase();
-            const cards = document.querySelectorAll('#resources-grid .card');
+            const cards = document.querySelectorAll('.file-card');
             
             cards.forEach(card => {
                 const text = card.innerText.toLowerCase();
@@ -932,14 +1231,13 @@
             document.getElementById('add-modal').classList.remove('open');
         }
 
-        // Helper
         function escapeHtml(str) {
             return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
-        // Initialisation globale
+        // Initialisation
         document.addEventListener('DOMContentLoaded', () => {
-            renderResources();
+            renderExplorer();
             generatePassword();
         });
     </script>
