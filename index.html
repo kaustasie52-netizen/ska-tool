@@ -718,9 +718,11 @@
 <!-- MODAL 2: AJOUTER UN FICHIER -->
 <div class="modal-overlay" id="file-modal">
 <div class="modal-card">
-<h3><i class="fa-solid fa-file-circle-plus" style="color:var(--accent-color);"></i> Ajouter un fichier / lien</h3>
+<h3><i class="fa-solid fa-file-circle-plus" style="color:var(--accent-color);"></i> Ajouter un fichier PDF / lien</h3>
 <div class="form-group">
 <label class="form-label">Titre du fichier</label>
+<input class="form-control" id="item-file" type="file" accept="application/pdf,.pdf" onchange="handlePdfSelection(this)"/>
+<div id="pdf-selected" style="font-size:.75rem;color:var(--text-muted);">Aucun PDF sélectionné (ou ajoutez simplement un lien ci-dessous).</div>
 <input class="form-control" id="item-title" placeholder="Ex: Google, Doc API..." type="text"/>
 </div>
 <div class="form-group">
@@ -879,23 +881,99 @@
             document.getElementById('emoji-input-group').style.display = (type === 'emoji') ? 'flex' : 'none';
         }
 
-        function saveFileItem() {
+        async function handlePdfSelection(input) {
+            const file = input.files && input.files[0];
+            const label = document.getElementById('pdf-selected');
+            if (!file) { label.textContent = 'Aucun PDF sélectionné (ou ajoutez simplement un lien ci-dessous).'; return; }
+            if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                input.value = '';
+                label.textContent = 'Fichier refusé : sélectionnez uniquement un PDF.';
+                return;
+            }
+            document.getElementById('item-title').value = file.name.replace(/\.pdf$/i, '');
+            document.getElementById('item-icon-type').value = 'emoji';
+            toggleIconInput('emoji');
+            document.getElementById('item-emoji').value = '📕';
+            label.textContent = `${file.name} — ${(file.size / 1024 / 1024).toFixed(2)} Mo`;
+        }
+
+        function openPdfDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('ska_tool_files', 1);
+                request.onupgradeneeded = () => request.result.createObjectStore('pdfs');
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function storePdf(id, file) {
+            const db = await openPdfDB();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction('pdfs', 'readwrite');
+                tx.objectStore('pdfs').put(file, String(id));
+                tx.oncomplete = resolve;
+                tx.onerror = () => reject(tx.error);
+            });
+        }
+
+        async function getPdf(id) {
+            const db = await openPdfDB();
+            return new Promise((resolve, reject) => {
+                const req = db.transaction('pdfs', 'readonly').objectStore('pdfs').get(String(id));
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => reject(req.error);
+            });
+        }
+
+        async function deletePdf(id) {
+            try {
+                const db = await openPdfDB();
+                const tx = db.transaction('pdfs', 'readwrite');
+                tx.objectStore('pdfs').delete(String(id));
+            } catch(e) {}
+        }
+
+        async function openResource(id) {
+            const item = state.resources.find(r => r.id === id);
+            if (!item) return;
+            if (item.type === 'pdf') {
+                const file = await getPdf(id);
+                if (!file) return alert('PDF introuvable dans le stockage local.');
+                const url = URL.createObjectURL(file);
+                window.open(url, '_blank');
+                setTimeout(() => URL.revokeObjectURL(url), 60000);
+            } else if (item.type === 'note') {
+                viewNote(id);
+            } else {
+                window.open(item.url, '_blank');
+            }
+        }
+
+        async function saveFileItem() {
             const title = document.getElementById('item-title').value.trim();
             let url = document.getElementById('item-url').value.trim();
+            const pdfInput = document.getElementById('item-file');
+            const pdf = pdfInput.files && pdfInput.files[0];
             const category = document.getElementById('item-category').value;
             const iconType = document.getElementById('item-icon-type').value;
             const emoji = document.getElementById('item-emoji').value.trim();
             const desc = document.getElementById('item-desc').value.trim();
 
-            if(!title || !url) return alert('Titre et URL requis.');
-            if(!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+            if (pdf && pdf.type !== 'application/pdf' && !pdf.name.toLowerCase().endsWith('.pdf')) return alert('Sélectionnez uniquement un fichier PDF.');
+            if (!pdf && !url) return alert('Sélectionnez un PDF ou renseignez une URL.');
+            if (!title) return alert('Titre requis.');
+            if (!pdf && !url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
 
-            state.resources.push({
-                id: Date.now(),
-                title, url, category, iconType, emoji, desc,
-                type: 'link', favorite: false
-            });
+            const id = Date.now();
+            const item = pdf ? {
+                id, title: title.endsWith('.pdf') ? title : title + '.pdf', url: '', category,
+                iconType: 'emoji', emoji: emoji || '📕', desc: desc || 'Document PDF', type: 'pdf', favorite: false
+            } : {
+                id, title, url, category, iconType, emoji, desc, type: 'link', favorite: false
+            };
 
+            if (pdf) await storePdf(id, pdf);
+            state.resources.push(item);
             localStorage.setItem('ska_resources', JSON.stringify(state.resources));
             renderExplorer();
             closeAddFileModal();
@@ -904,6 +982,8 @@
             document.getElementById('item-url').value = '';
             document.getElementById('item-emoji').value = '';
             document.getElementById('item-desc').value = '';
+            pdfInput.value = '';
+            document.getElementById('pdf-selected').textContent = 'Aucun PDF sélectionné (ou ajoutez simplement un lien ci-dessous).';
         }
 
         // EXPLORATEUR
@@ -922,6 +1002,7 @@
         }
 
         function getIconHTML(resource) {
+            if (resource.type === 'pdf') return '<span style="color:#ef4444;font-size:2rem;">📕</span>';
             if (resource.iconType === 'emoji' && resource.emoji) {
                 return `<span>${resource.emoji}</span>`;
             } else {
@@ -960,10 +1041,7 @@
                         <button class="btn-icon" style="width:30px;height:30px;" onclick="toggleFavorite(${r.id})">
                             <i class="${r.favorite ? 'fa-solid' : 'fa-regular'} fa-star" style="color:${r.favorite ? 'var(--warning-color)' : ''}"></i>
                         </button>
-                        ${r.type === 'note' ? 
-                            `<button class="btn-icon" style="width:30px;height:30px;" title="Lire / Télécharger" onclick="viewNote(${r.id})"><i class="fa-solid fa-eye"></i></button>` :
-                            `<a href="${r.url}" target="_blank" class="btn-icon" style="width:30px;height:30px;"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>`
-                        }
+                        <button class="btn-icon" style="width:30px;height:30px;" title="Ouvrir" onclick="openResource(${r.id})"><i class="fa-solid ${r.type === 'pdf' ? 'fa-file-pdf' : r.type === 'note' ? 'fa-eye' : 'fa-arrow-up-right-from-square'}"></i></button>
                         <button class="btn-icon" style="width:30px;height:30px;" onclick="deleteResource(${r.id})"><i class="fa-solid fa-trash" style="color:var(--danger-color)"></i></button>
                     </div>
                 </div>
@@ -987,6 +1065,8 @@
         }
 
         function deleteResource(id) {
+            const item = state.resources.find(r => r.id === id);
+            if (item && item.type === 'pdf') deletePdf(id);
             state.resources = state.resources.filter(r => r.id !== id);
             localStorage.setItem('ska_resources', JSON.stringify(state.resources));
             renderExplorer();
